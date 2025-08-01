@@ -73,43 +73,179 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-green-100 via-blue-100 via-yellow-100 to-pink-100 py-20">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-blue-800 mb-8">
-            Master Any Language
-          </h1>
-          
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="text-left">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <Play className="w-6 h-6 text-blue-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Join Community</h3>
-                <p className="text-gray-600 text-sm mb-4">Connect with millions of learners worldwide</p>
-                <Link href="/community">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                    Join Community
-                  </Button>
+      {/* Language Selection Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Language Selection */}
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
+                Which <span className="text-orange-500">language</span><br />
+                do you want to<br />
+                learn?
+              </h1>
+              
+              <div className="grid grid-cols-2 gap-4 max-w-md">
+                <Link href="/dashboard">
+                  <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-white hover:shadow-md transition-all cursor-pointer">
+                    <div className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">🇪🇸</span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">Spanish</div>
+                      <div className="text-sm text-gray-500">(Mexico)</div>
+                    </div>
+                  </div>
+                </Link>
+                
+                <Link href="/dashboard">
+                  <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-white hover:shadow-md transition-all cursor-pointer">
+                    <div className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">🇪🇸</span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">Spanish</div>
+                      <div className="text-sm text-gray-500">(Spain)</div>
+                    </div>
+                  </div>
+                </Link>
+                
+                <Link href="/dashboard">
+                  <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-white hover:shadow-md transition-all cursor-pointer">
+                    <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">🇫🇷</span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">French</div>
+                    </div>
+                  </div>
+                </Link>
+                
+                <Link href="/dashboard">
+                  <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-white hover:shadow-md transition-all cursor-pointer">
+                    <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">🇩🇪</span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">German</div>
+                    </div>
+                  </div>
+                </Link>
+                
+                <Link href="/dashboard">
+                  <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-white hover:shadow-md transition-all cursor-pointer">
+                    <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">🇮🇹</span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">Italian</div>
+                    </div>
+                  </div>
+                </Link>
+                
+                <Link href="/dashboard">
+                  <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-white hover:shadow-md transition-all cursor-pointer">
+                    <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">+</span>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">More</div>
+                    </div>
+                  </div>
                 </Link>
               </div>
-              
-              <div className="text-left">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <Smartphone className="w-6 h-6 text-blue-600" />
+            </div>
+            
+            {/* Right Side - Content Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div className="bg-orange-100 rounded-xl p-6 relative overflow-hidden">
+                  <div className="absolute top-4 right-4 text-2xl">🚗</div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">A Cultural History<br />Of Coffee</h3>
+                  <p className="text-sm text-gray-600">Daily Life</p>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Mobile App</h3>
-                <p className="text-gray-600 text-sm mb-4">Learn on the go with our mobile app</p>
-                <p className="text-gray-500 text-xs italic">Coming soon!</p>
+                
+                <div className="bg-blue-100 rounded-xl p-4 relative overflow-hidden">
+                  <div className="absolute top-4 right-4 text-2xl">☕</div>
+                  <div className="text-sm text-gray-600">Conversation</div>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="bg-cover bg-center rounded-xl h-48 relative" style={{backgroundImage: "url('https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&h=300&fit=crop')"}}>
+                  <div className="absolute inset-0 bg-black bg-opacity-30 rounded-xl"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 className="font-semibold">Weekend Adventures</h3>
+                  </div>
+                </div>
+                
+                <div className="bg-green-400 rounded-xl p-6 relative">
+                  <div className="absolute top-4 right-4 text-2xl">🧺</div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Share your<br />weekend plans</h3>
+                  <p className="text-sm text-gray-700">Daily Life</p>
+                </div>
+              </div>
+              
+              <div className="col-span-2">
+                <div className="bg-yellow-300 rounded-xl p-6 relative">
+                  <div className="absolute top-4 right-4 text-2xl">📚</div>
+                  <h3 className="text-xl font-bold text-gray-800">Newcomer</h3>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Effective Learning Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-16">
+            The effective way to learn a language<br />online
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Image */}
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden shadow-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&h=400&fit=crop" 
+                  alt="People learning in a cafe" 
+                  className="w-full h-96 object-cover"
+                />
+                <div className="absolute top-6 left-6 bg-yellow-400 text-black px-4 py-2 rounded-lg">
+                  <div className="font-semibold">Talk about</div>
+                  <div className="font-semibold">your favorite</div>
+                  <div className="font-semibold">food</div>
+                  <div className="text-sm mt-1">Daily Life</div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Side - Content */}
+            <div className="space-y-6">
+              <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
+                Learn to speak a new<br />
+                language with<br />
+                confidence
+              </h3>
+              
+              <p className="text-lg text-gray-600 leading-relaxed">
+                With Learn a Language, you'll learn practical and useful skills that you can apply right away — so you can reach your goal of having real-life conversations faster.
+              </p>
+              
+              <Link href="/dashboard">
+                <Button size="lg" className="bg-black hover:bg-gray-800 text-white px-8 py-4 text-lg rounded-full">
+                  Start learning
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Download App Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Download App</h2>
           
@@ -133,11 +269,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Languages Section */}
-      <section className="py-16 bg-gray-50">
+      {/* All Languages Section */}
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">Choose Your Language</h2>
-          <p className="text-center text-gray-600 mb-12">Available Languages</p>
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">All Available Languages</h2>
+          <p className="text-center text-gray-600 mb-12">Choose from our complete selection</p>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {availableLanguages.map((language) => (
