@@ -65,13 +65,13 @@ export default function Home() {
                 </select>
                 
                 <Link href="/dashboard">
-                  <Button variant="outline" className="text-white border-white hover:bg-white hover:text-blue-600">
+                  <Button variant="ghost" className="text-white hover:text-blue-200 hover:bg-transparent">
                     Log in
                   </Button>
                 </Link>
                 
                 <Link href="/dashboard">
-                  <Button className="bg-white text-blue-600 hover:bg-blue-50">
+                  <Button variant="ghost" className="text-white hover:text-blue-200 hover:bg-transparent font-semibold">
                     Sign up
                   </Button>
                 </Link>
