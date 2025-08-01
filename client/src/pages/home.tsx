@@ -88,26 +88,26 @@ export default function Home() {
 
       {/* Language Selection Section */}
       <section className="py-20 bg-gray-50 relative overflow-hidden">
-        {/* Animated Background */}
+        {/* Animated Background - positioned in empty white spaces only */}
         <div className="absolute inset-0 opacity-25 pointer-events-none">
-          {/* Rotating Language Rings */}
-          <div className="absolute top-16 right-1/4 w-40 h-40 border-3 border-blue-400 rounded-full animate-spin-slow">
+          {/* Rotating Language Rings - positioned in right side empty space */}
+          <div className="absolute top-32 right-16 w-36 h-36 border-3 border-blue-400 rounded-full animate-spin-slow">
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 text-sm font-bold text-blue-600">EN</div>
             <div className="absolute top-1/2 -right-3 transform -translate-y-1/2 text-sm font-bold text-blue-600">ES</div>
             <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 text-sm font-bold text-blue-600">FR</div>
             <div className="absolute top-1/2 -left-3 transform -translate-y-1/2 text-sm font-bold text-blue-600">DE</div>
           </div>
           
-          <div className="absolute bottom-16 left-1/4 w-32 h-32 border-3 border-green-400 rounded-full animate-spin-reverse">
+          <div className="absolute bottom-24 right-32 w-28 h-28 border-3 border-green-400 rounded-full animate-spin-reverse">
             <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 text-sm font-bold text-green-600">中文</div>
             <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 text-sm font-bold text-green-600">RU</div>
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 text-sm font-bold text-green-600">JA</div>
             <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 text-sm font-bold text-green-600">AR</div>
           </div>
 
-          {/* Floating Text Animations */}
-          <div className="absolute top-24 left-0 animate-slide-right">
-            <div className="flex items-center space-x-4 text-xl font-semibold">
+          {/* Floating Text Animations - using empty margins/padding areas */}
+          <div className="absolute top-4 left-0 animate-slide-right">
+            <div className="flex items-center space-x-3 text-lg font-semibold">
               <span className="text-blue-600">Hello</span>
               <span className="text-gray-500">→</span>
               <span className="text-green-600">Hola</span>
@@ -115,64 +115,51 @@ export default function Home() {
           </div>
           
           <div className="absolute top-1/2 right-0 animate-slide-left">
-            <div className="flex items-center space-x-4 text-xl font-semibold">
+            <div className="flex items-center space-x-3 text-lg font-semibold">
               <span className="text-purple-600">Bonjour</span>
               <span className="text-gray-500">←</span>
               <span className="text-orange-600">Guten Tag</span>
             </div>
           </div>
 
-          <div className="absolute bottom-32 left-0 animate-slide-right-delayed">
-            <div className="flex items-center space-x-4 text-xl font-semibold">
+          <div className="absolute bottom-4 left-0 animate-slide-right-delayed">
+            <div className="flex items-center space-x-3 text-lg font-semibold">
               <span className="text-red-600">你好</span>
               <span className="text-gray-500">→</span>
               <span className="text-blue-600">Привет</span>
             </div>
           </div>
 
-          {/* Flag to Dictionary Transformations */}
-          <div className="absolute top-1/3 left-12">
+          {/* Flag to Dictionary Transformations - positioned in right margin area */}
+          <div className="absolute top-72 right-4">
             <div className="animate-pulse-slow">
-              <div className="text-3xl mb-2 animate-flag-transform">🇪🇸</div>
-              <div className="text-sm bg-white p-2 rounded shadow-md border">
+              <div className="text-2xl mb-1 animate-flag-transform">🇪🇸</div>
+              <div className="text-xs bg-white p-1.5 rounded shadow-md border">
                 <div className="font-bold text-gray-800">casa</div>
                 <div className="text-gray-600">house</div>
               </div>
             </div>
           </div>
 
-          <div className="absolute bottom-1/3 right-12">
+          <div className="absolute bottom-48 right-6">
             <div className="animate-pulse-slow-delayed">
-              <div className="text-3xl mb-2 animate-flag-transform">🇫🇷</div>
-              <div className="text-sm bg-white p-2 rounded shadow-md border">
+              <div className="text-2xl mb-1 animate-flag-transform">🇫🇷</div>
+              <div className="text-xs bg-white p-1.5 rounded shadow-md border">
                 <div className="font-bold text-gray-800">amour</div>
                 <div className="text-gray-600">love</div>
               </div>
             </div>
           </div>
 
-          <div className="absolute top-2/3 right-1/3">
-            <div className="animate-pulse-slow">
-              <div className="text-3xl mb-2 animate-flag-transform">🇩🇪</div>
-              <div className="text-sm bg-white p-2 rounded shadow-md border">
-                <div className="font-bold text-gray-800">freund</div>
-                <div className="text-gray-600">friend</div>
-              </div>
-            </div>
+          {/* Floating Language Particles - in empty corner spaces */}
+          <div className="absolute top-8 right-8 animate-float">
+            <span className="text-xl">🌍</span>
           </div>
-
-          {/* Floating Language Particles */}
-          <div className="absolute top-1/3 left-2/3 animate-float">
-            <span className="text-2xl">🌍</span>
+          <div className="absolute bottom-8 right-4 animate-float-delayed">
+            <span className="text-xl">📚</span>
           </div>
-          <div className="absolute bottom-1/4 left-1/2 animate-float-delayed">
-            <span className="text-2xl">📚</span>
-          </div>
-          <div className="absolute top-1/4 left-1/3 animate-float-slow">
-            <span className="text-2xl">💬</span>
-          </div>
-          <div className="absolute bottom-1/2 right-1/4 animate-float">
-            <span className="text-2xl">🎯</span>
+          <div className="absolute top-2 right-1/2 animate-float-slow">
+            <span className="text-xl">💬</span>
           </div>
         </div>
 
@@ -244,8 +231,33 @@ export default function Home() {
       </section>
 
       {/* Effective Learning Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-white relative overflow-hidden">
+        {/* Animations in empty white space */}
+        <div className="absolute inset-0 opacity-25 pointer-events-none">
+          {/* Top right empty area */}
+          <div className="absolute top-8 right-8 animate-float-slow">
+            <span className="text-xl">🎯</span>
+          </div>
+          
+          {/* Bottom left empty area */}
+          <div className="absolute bottom-16 left-8 w-24 h-24 border-2 border-purple-400 rounded-full animate-spin-slow">
+            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 text-xs font-bold text-purple-600">IT</div>
+            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 text-xs font-bold text-purple-600">PT</div>
+          </div>
+          
+          {/* Right side margin */}
+          <div className="absolute top-1/3 right-4">
+            <div className="animate-pulse-slow">
+              <div className="text-2xl mb-1 animate-flag-transform">🇮🇹</div>
+              <div className="text-xs bg-white p-1.5 rounded shadow-md border">
+                <div className="font-bold text-gray-800">ciao</div>
+                <div className="text-gray-600">hello</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-16">
             The effective way to learn a language<br />online
           </h2>
@@ -316,8 +328,30 @@ export default function Home() {
       </section>
 
       {/* What Makes Us Different Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gray-50 relative overflow-hidden">
+        {/* Animations in white space margins */}
+        <div className="absolute inset-0 opacity-25 pointer-events-none">
+          {/* Left margin area */}
+          <div className="absolute top-1/4 left-4 animate-float-delayed">
+            <span className="text-xl">📖</span>
+          </div>
+          
+          {/* Right margin area */}
+          <div className="absolute bottom-1/3 right-6 animate-float">
+            <span className="text-xl">🗣️</span>
+          </div>
+          
+          {/* Top margin sliding text */}
+          <div className="absolute top-4 left-0 animate-slide-right">
+            <div className="flex items-center space-x-3 text-lg font-semibold">
+              <span className="text-green-600">Gracias</span>
+              <span className="text-gray-500">→</span>
+              <span className="text-blue-600">Thank you</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-16">
             What makes Learn a Language different?
           </h2>
@@ -551,7 +585,25 @@ export default function Home() {
 
       {/* Interactive Learning Experience Section */}
       <section className="py-20 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Animations in gradient background empty areas */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          {/* Upper right corner */}
+          <div className="absolute top-12 right-12 w-20 h-20 border-2 border-orange-400 rounded-full animate-spin-reverse">
+            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 text-xs font-bold text-orange-600">KO</div>
+            <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 text-xs font-bold text-orange-600">HI</div>
+          </div>
+          
+          {/* Bottom left area */}
+          <div className="absolute bottom-12 left-12 animate-pulse-slow-delayed">
+            <div className="text-2xl mb-1 animate-flag-transform">🇰🇷</div>
+            <div className="text-xs bg-white p-1.5 rounded shadow-md border">
+              <div className="font-bold text-gray-800">안녕</div>
+              <div className="text-gray-600">hello</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Side - Interactive Demo */}
             <div className="relative">
@@ -709,8 +761,30 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gray-50 relative overflow-hidden">
+        {/* Animations in empty margins */}
+        <div className="absolute inset-0 opacity-25 pointer-events-none">
+          {/* Right side empty space */}
+          <div className="absolute top-16 right-8 animate-float">
+            <span className="text-xl">⭐</span>
+          </div>
+          
+          {/* Left side margin */}
+          <div className="absolute bottom-20 left-6 animate-float-delayed">
+            <span className="text-xl">💡</span>
+          </div>
+          
+          {/* Bottom margin text animation */}
+          <div className="absolute bottom-4 left-0 animate-slide-right-delayed">
+            <div className="flex items-center space-x-3 text-lg font-semibold">
+              <span className="text-purple-600">Danke</span>
+              <span className="text-gray-500">→</span>
+              <span className="text-green-600">Thanks</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Join millions of learners
