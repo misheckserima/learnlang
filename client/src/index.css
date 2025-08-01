@@ -82,11 +82,15 @@
 }
 
 .animate-spin-slow {
-  animation: spin-slow 20s linear infinite;
+  animation: spin-slow 25s linear infinite;
 }
 
 .animate-spin-reverse {
-  animation: spin-reverse 15s linear infinite;
+  animation: spin-reverse 20s linear infinite;
+}
+
+.border-3 {
+  border-width: 3px;
 }
 
 .animate-slide-right {
