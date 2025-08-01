@@ -1,19 +1,27 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Play, Download, Apple, Smartphone, Facebook, Instagram, Twitter, Linkedin, Send, Check } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
 
-  const headerLanguages = [
+  const languages = [
     { code: "en", name: "English", flag: "🇺🇸" },
     { code: "es", name: "Español", flag: "🇪🇸" },
     { code: "fr", name: "Français", flag: "🇫🇷" },
     { code: "de", name: "Deutsch", flag: "🇩🇪" },
     { code: "zh", name: "中文", flag: "🇨🇳" },
-    { code: "ru", name: "Русский", flag: "🇷🇺" }
+    { code: "ja", name: "日本語", flag: "🇯🇵" },
+    { code: "ko", name: "한국어", flag: "🇰🇷" },
+    { code: "pt", name: "Português", flag: "🇵🇹" },
+    { code: "it", name: "Italiano", flag: "🇮🇹" },
+    { code: "ru", name: "Русский", flag: "🇷🇺" },
+    { code: "ar", name: "العربية", flag: "🇸🇦" },
+    { code: "hi", name: "हिन्दी", flag: "🇮🇳" }
   ];
 
   // Fetch languages from database
@@ -54,7 +62,7 @@ export default function Home() {
                   onChange={(e) => setSelectedLanguage(e.target.value)}
                   className="bg-blue-700 text-white border-blue-500 rounded px-2 py-1 text-sm"
                 >
-                  {headerLanguages.map((lang) => (
+                  {languages.map((lang) => (
                     <option key={lang.code} value={lang.code}>
                       {lang.flag} {lang.name}
                     </option>
@@ -147,34 +155,615 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Simple Call to Action Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Start learning a new language today
+      {/* Effective Learning Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-16">
+            The effective way to learn a language<br />online
           </h2>
           
-          <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-            Join millions of learners worldwide and discover the joy of speaking a new language.
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Image */}
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden shadow-lg">
+                <img 
+                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&h=400&fit=crop" 
+                  alt="People learning in a cafe" 
+                  className="w-full h-96 object-cover"
+                />
+                <div className="absolute top-6 left-6 bg-yellow-400 text-black px-4 py-2 rounded-lg">
+                  <div className="font-semibold">Talk about</div>
+                  <div className="font-semibold">your favorite</div>
+                  <div className="font-semibold">food</div>
+                  <div className="text-sm mt-1">Daily Life</div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Side - Content */}
+            <div className="space-y-6">
+              <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
+                Learn to speak a new<br />
+                language with<br />
+                confidence
+              </h3>
+              
+              <p className="text-lg text-gray-600 leading-relaxed">
+                With Learn a Language, you'll learn practical and useful skills that you can apply right away — so you can reach your goal of having real-life conversations faster.
+              </p>
+              
+              <Link href="/dashboard">
+                <Button size="lg" className="bg-black hover:bg-gray-800 text-white px-8 py-4 text-lg rounded-full">
+                  Start learning
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Download App Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">Download App</h2>
+          
+          <div className="flex justify-center items-center space-x-6">
+            <div className="bg-black text-white px-6 py-3 rounded-lg flex items-center space-x-3 hover:bg-gray-800 transition-colors cursor-pointer">
+              <Apple className="w-6 h-6" />
+              <div className="text-left">
+                <div className="text-xs">Download on the</div>
+                <div className="text-lg font-semibold">App Store</div>
+              </div>
+            </div>
+            
+            <div className="bg-black text-white px-6 py-3 rounded-lg flex items-center space-x-3 hover:bg-gray-800 transition-colors cursor-pointer">
+              <Play className="w-6 h-6" />
+              <div className="text-left">
+                <div className="text-xs">Get it on</div>
+                <div className="text-lg font-semibold">Google Play</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What Makes Us Different Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-16">
+            What makes Learn a Language different?
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Real People */}
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <div className="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center relative overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face" 
+                    alt="Real person" 
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                  <div className="absolute top-2 right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs">✨</span>
+                  </div>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Real people</h3>
+              <p className="text-gray-600 text-lg leading-relaxed">
+                Learn authentic language for real-world situations.
+              </p>
+            </div>
+            
+            {/* Supportive Community */}
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <div className="w-32 h-32 bg-orange-100 rounded-full flex items-center justify-center">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-12 bg-orange-400 rounded-full"></div>
+                    <div className="w-8 h-12 bg-orange-600 rounded-full"></div>
+                  </div>
+                  <div className="absolute mt-8 ml-4">
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs">💬</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Supportive Community</h3>
+              <p className="text-gray-600 text-lg leading-relaxed">
+                Learn together and get feedback from other fluent speakers.
+              </p>
+            </div>
+            
+            {/* Express Yourself */}
+            <div className="text-center">
+              <div className="mb-6 flex justify-center">
+                <div className="w-32 h-32 bg-green-100 rounded-full flex items-center justify-center">
+                  <div className="relative">
+                    <div className="w-12 h-8 bg-blue-500 rounded transform rotate-12"></div>
+                    <div className="w-12 h-8 bg-orange-500 rounded transform -rotate-12 -mt-4 ml-4"></div>
+                    <div className="w-12 h-8 bg-green-500 rounded transform rotate-6 -mt-4 ml-2"></div>
+                    <div className="w-12 h-8 bg-purple-500 rounded transform -rotate-6 -mt-4 ml-6"></div>
+                  </div>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Express yourself</h3>
+              <p className="text-gray-600 text-lg leading-relaxed">
+                Learn grammar, cultural skills in expertly designed lessons.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Video Integration Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Learn real-world language skills
+            </h2>
+            <p className="text-xl text-gray-600">
+              See and hear real people speaking the language you're learning to build your confidence.
+            </p>
+          </div>
+          
+          <div className="relative">
+            <div className="flex space-x-4 overflow-x-auto pb-4">
+              {/* English Speaker */}
+              <div className="flex-shrink-0 relative">
+                <div className="w-64 h-80 bg-cover bg-center rounded-2xl relative overflow-hidden" style={{backgroundImage: "url('https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=500&fit=crop&crop=face')"}}>
+                  <div className="absolute inset-0 bg-black bg-opacity-20 rounded-2xl"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-white rounded-lg p-3 mb-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl">🇺🇸</span>
+                        <div>
+                          <div className="font-bold text-gray-900">ENGLISH</div>
+                          <div className="text-sm text-gray-600">2M learners</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all">
+                      <Play className="w-6 h-6 text-gray-800 ml-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* German Speaker */}
+              <div className="flex-shrink-0 relative">
+                <div className="w-64 h-80 bg-cover bg-center rounded-2xl relative overflow-hidden" style={{backgroundImage: "url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face')"}}>
+                  <div className="absolute inset-0 bg-black bg-opacity-20 rounded-2xl"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-white rounded-lg p-3 mb-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl">🇩🇪</span>
+                        <div>
+                          <div className="font-bold text-gray-900">GERMAN</div>
+                          <div className="text-sm text-gray-600">4M learners</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all">
+                      <Play className="w-6 h-6 text-gray-800 ml-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Spanish Speaker */}
+              <div className="flex-shrink-0 relative">
+                <div className="w-64 h-80 bg-cover bg-center rounded-2xl relative overflow-hidden" style={{backgroundImage: "url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face')"}}>
+                  <div className="absolute inset-0 bg-black bg-opacity-20 rounded-2xl"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-white rounded-lg p-3 mb-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl">🇪🇸</span>
+                        <div>
+                          <div className="font-bold text-gray-900">SPANISH</div>
+                          <div className="text-sm text-gray-600">5M learners</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all">
+                      <Play className="w-6 h-6 text-gray-800 ml-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* French Speaker */}
+              <div className="flex-shrink-0 relative">
+                <div className="w-64 h-80 bg-cover bg-center rounded-2xl relative overflow-hidden" style={{backgroundImage: "url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&crop=face')"}}>
+                  <div className="absolute inset-0 bg-black bg-opacity-20 rounded-2xl"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-white rounded-lg p-3 mb-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl">🇫🇷</span>
+                        <div>
+                          <div className="font-bold text-gray-900">FRENCH</div>
+                          <div className="text-sm text-gray-600">2M learners</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all">
+                      <Play className="w-6 h-6 text-gray-800 ml-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Russian Speaker */}
+              <div className="flex-shrink-0 relative">
+                <div className="w-64 h-80 bg-cover bg-center rounded-2xl relative overflow-hidden" style={{backgroundImage: "url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop&crop=face')"}}>
+                  <div className="absolute inset-0 bg-black bg-opacity-20 rounded-2xl"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-white rounded-lg p-3 mb-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl">🇷🇺</span>
+                        <div>
+                          <div className="font-bold text-gray-900">RUSSIAN</div>
+                          <div className="text-sm text-gray-600">1M learners</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all">
+                      <Play className="w-6 h-6 text-gray-800 ml-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Mandarin Speaker */}
+              <div className="flex-shrink-0 relative">
+                <div className="w-64 h-80 bg-cover bg-center rounded-2xl relative overflow-hidden" style={{backgroundImage: "url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=500&fit=crop&crop=face')"}}>
+                  <div className="absolute inset-0 bg-black bg-opacity-20 rounded-2xl"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-white rounded-lg p-3 mb-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl">🇨🇳</span>
+                        <div>
+                          <div className="font-bold text-gray-900">MANDARIN</div>
+                          <div className="text-sm text-gray-600">3M learners</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all">
+                      <Play className="w-6 h-6 text-gray-800 ml-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Navigation arrows */}
+            <button className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow">
+              <span className="text-gray-600">‹</span>
+            </button>
+            <button className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow">
+              <span className="text-gray-600">›</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Learning Experience Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Interactive Demo */}
+            <div className="relative">
+              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-md mx-auto">
+                <div className="relative h-80 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=600&h=400&fit=crop')"}}>
+                    <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+                  </div>
+                  
+                  {/* Interactive Elements */}
+                  <div className="relative z-10 space-y-4">
+                    <div className="bg-white bg-opacity-90 rounded-lg p-3 max-w-xs">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">🎯</span>
+                        </div>
+                        <div>
+                          <div className="font-bold text-gray-900 text-sm">Practice Speaking</div>
+                          <div className="text-xs text-gray-600">Interactive lessons</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white bg-opacity-90 rounded-lg p-3 max-w-xs ml-auto">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-gray-900 text-sm">Grammar Mastery</div>
+                          <div className="text-xs text-gray-600">Step by step</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white bg-opacity-90 rounded-lg p-3 max-w-xs">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">💬</span>
+                        </div>
+                        <div>
+                          <div className="font-bold text-gray-900 text-sm">Real Conversations</div>
+                          <div className="text-xs text-gray-600">With native speakers</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white bg-opacity-90 rounded-lg p-3 max-w-xs ml-auto">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">🏆</span>
+                        </div>
+                        <div>
+                          <div className="font-bold text-gray-900 text-sm">Cultural Context</div>
+                          <div className="text-xs text-gray-600">Learn traditions</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Play Button */}
+                  <div className="absolute bottom-4 right-4 z-20">
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:shadow-xl transition-all">
+                      <Play className="w-5 h-5 text-gray-800 ml-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Side - Features */}
+            <div className="space-y-6">
+              <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
+                Interactive learning<br />
+                experience designed<br />
+                for success
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Pronunciation Practice</h4>
+                    <p className="text-gray-600">AI-powered speech recognition helps perfect your accent</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Grammar Exercises</h4>
+                    <p className="text-gray-600">Interactive quizzes that adapt to your learning pace</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Cultural Stories</h4>
+                    <p className="text-gray-600">Learn language through engaging cultural narratives</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Community Learning</h4>
+                    <p className="text-gray-600">Connect with other learners and native speakers</p>
+                  </div>
+                </div>
+              </div>
+              
+              <Link href="/dashboard">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg rounded-full">
+                  Try Interactive Demo
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Available Languages Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Choose from 12+ languages
+            </h2>
+            <p className="text-lg text-gray-600">
+              Start your journey with any of our supported languages
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {availableLanguages.map((language) => (
+              <Link key={language.code} href="/dashboard">
+                <div className="text-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
+                  <div className="text-3xl mb-2">{language.flagEmoji}</div>
+                  <div className="font-medium text-gray-900 text-sm">{language.name}</div>
+                  <div className="text-xs text-gray-500">{language.nativeName}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Join millions of learners
+            </h2>
+            <p className="text-xl text-gray-600">
+              See what our community has to say about their learning journey
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="flex items-center mb-4">
+                <img 
+                  src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=80&h=80&fit=crop&crop=face" 
+                  alt="User testimonial" 
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div className="ml-3">
+                  <div className="font-semibold text-gray-900">Maria Rodriguez</div>
+                  <div className="text-sm text-gray-500">Learning French</div>
+                </div>
+              </div>
+              <p className="text-gray-600 italic">
+                "The pronunciation practice feature helped me gain confidence in speaking French. 
+                I can now have conversations with native speakers!"
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="flex items-center mb-4">
+                <img 
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" 
+                  alt="User testimonial" 
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div className="ml-3">
+                  <div className="font-semibold text-gray-900">James Chen</div>
+                  <div className="text-sm text-gray-500">Learning Spanish</div>
+                </div>
+              </div>
+              <p className="text-gray-600 italic">
+                "The cultural stories made learning Spanish so much more engaging. 
+                I understand not just the language, but the culture behind it."
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 shadow-sm">
+              <div className="flex items-center mb-4">
+                <img 
+                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" 
+                  alt="User testimonial" 
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div className="ml-3">
+                  <div className="font-semibold text-gray-900">Anna Schmidt</div>
+                  <div className="text-sm text-gray-500">Learning Mandarin</div>
+                </div>
+              </div>
+              <p className="text-gray-600 italic">
+                "The community features are amazing! I practice with native speakers 
+                and other learners. It feels like having language partners worldwide."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="py-16 bg-blue-600 text-white">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Stay updated with language learning tips
+          </h2>
+          <p className="text-lg text-blue-100 mb-8">
+            Get weekly tips, cultural insights, and exclusive content delivered to your inbox
           </p>
           
-          <Link href="/dashboard">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg rounded-full">
-              Get Started Free
+          <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-4">
+            <input 
+              type="email" 
+              placeholder="Enter your email"
+              className="flex-1 px-4 py-3 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white"
+            />
+            <Button className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold flex items-center justify-center">
+              <Send className="w-4 h-4 mr-2" />
+              Subscribe
             </Button>
-          </Link>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <div className="mb-4">
-            <Logo size="lg" className="brightness-0 invert mx-auto mb-4" />
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Logo and Description */}
+            <div className="col-span-1 md:col-span-2">
+              <div className="mb-4">
+                <Logo size="lg" className="brightness-0 invert" />
+              </div>
+              <p className="text-gray-400 mb-6 max-w-md">
+                Learn a Language is the world's leading language learning platform, 
+                helping millions of people master new languages through innovative technology 
+                and engaging content.
+              </p>
+              <div className="flex space-x-4">
+                <Facebook className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+                <Instagram className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+                <Twitter className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+                <Linkedin className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+              </div>
+            </div>
+            
+            {/* Quick Links */}
+            <div>
+              <h3 className="font-semibold text-white mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li><Link href="/lessons" className="text-gray-400 hover:text-white transition-colors">Lessons</Link></li>
+                <li><Link href="/stories" className="text-gray-400 hover:text-white transition-colors">Stories</Link></li>
+                <li><Link href="/community" className="text-gray-400 hover:text-white transition-colors">Community</Link></li>
+                <li><Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors">Dashboard</Link></li>
+              </ul>
+            </div>
+            
+            {/* Support */}
+            <div>
+              <h3 className="font-semibold text-white mb-4">Support</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+              </ul>
+            </div>
           </div>
-          <p className="text-gray-400 text-sm">
-            Start your language learning journey today with Learn a Language
-          </p>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+            <p className="text-gray-400">
+              © 2024 Learn a Language. All rights reserved.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
