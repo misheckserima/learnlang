@@ -613,17 +613,17 @@ export default function Home() {
 
       {/* All Languages Section */}
       <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">All Available Languages</h2>
           <p className="text-center text-gray-600 mb-12">Choose from our complete selection</p>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
             {availableLanguages.map((language) => (
               <Link key={language.code} href="/dashboard">
-                <Card className="p-8 text-center hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-blue-200">
+                <Card className="p-4 text-center hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-blue-200">
                   <CardContent className="p-0">
-                    <div className="text-5xl mb-4">{language.flag}</div>
-                    <h3 className="font-medium text-gray-800 text-lg">{language.name}</h3>
+                    <div className="text-3xl mb-2">{language.flag}</div>
+                    <h3 className="font-medium text-gray-800 text-sm">{language.name}</h3>
                   </CardContent>
                 </Card>
               </Link>
