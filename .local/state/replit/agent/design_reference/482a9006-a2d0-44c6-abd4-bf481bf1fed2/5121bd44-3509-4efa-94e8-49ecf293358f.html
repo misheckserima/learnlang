@@ -1,0 +1,1027 @@
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaLearn - Universal Language Learning Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10B981',
+                        secondary: '#3B82F6',
+                        accent: '#F59E0B',
+                        success: '#10B981',
+                        error: '#EF4444'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 font-sans">
+    <!-- @COMPONENT: Navigation [responsive header with auth status] -->
+    <nav class="bg-white shadow-sm border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-globe text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold text-slate-800">LinguaLearn</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#dashboard" class="text-slate-600 hover:text-primary transition-colors">Dashboard</a>
+                    <a href="#lessons" class="text-slate-600 hover:text-primary transition-colors">Lessons</a>
+                    <a href="#community" class="text-slate-600 hover:text-primary transition-colors">Community</a>
+                    <a href="#stories" class="text-slate-600 hover:text-primary transition-colors">Stories</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- @STATE: isAuthenticated:boolean = true -->
+                    <div class="flex items-center space-x-3">
+                        <div class="flex items-center space-x-2 bg-accent/10 px-3 py-1 rounded-full">
+                            <i class="fas fa-fire text-accent text-sm"></i>
+                            <span class="text-sm font-medium text-slate-700" data-bind="user.currentStreak">7</span>
+                        </div>
+                        <div class="w-8 h-8 rounded-full overflow-hidden">
+                            <!-- Profile image with proper aspect ratio handling -->
+                            <img src="https://pixabay.com/get/ge04a96b5d5274f510505280e50a2d2c740be4906bb434f56b216efd9a366be06a69b7e97982a900458fc7a9d9a8590acda5a5a3aa4f8507b2e2c6e579ae2da01_1280.jpg" 
+                                 alt="User profile" class="w-full h-full object-cover" data-mock="true">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: Navigation -->
+
+    <!-- @COMPONENT: HeroSection [main landing section with CTA] -->
+    <section class="bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center space-y-8">
+                <div class="space-y-4">
+                    <h1 class="text-4xl md:text-6xl font-bold text-slate-800 leading-tight">
+                        Master Any Language with
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                            AI-Powered Learning
+                        </span>
+                    </h1>
+                    <p class="text-xl text-slate-600 max-w-3xl mx-auto">
+                        Join millions of learners worldwide in an immersive, gamified language learning experience. 
+                        From pronunciation feedback to cultural immersion, we make language learning engaging and effective.
+                    </p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button class="bg-primary text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-primary/90 transition-colors flex items-center space-x-2 shadow-lg" 
+                            data-event="click:startLearning">
+                        <i class="fas fa-play"></i>
+                        <span>Start Learning Today</span>
+                    </button>
+                    <button class="border-2 border-slate-300 text-slate-700 px-8 py-4 rounded-xl font-semibold text-lg hover:border-primary hover:text-primary transition-colors">
+                        View Demo
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-center space-x-8 pt-8">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-slate-800" data-bind="stats.totalUsers">2.5M+</div>
+                        <div class="text-sm text-slate-600">Active Learners</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-slate-800" data-bind="stats.languages">25+</div>
+                        <div class="text-sm text-slate-600">Languages</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-slate-800" data-bind="stats.completionRate">94%</div>
+                        <div class="text-sm text-slate-600">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: HeroSection -->
+
+    <!-- @COMPONENT: Dashboard [personalized learning dashboard] -->
+    <section id="dashboard" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">Your Learning Dashboard</h2>
+                <p class="text-lg text-slate-600">Track your progress and stay motivated with personalized insights</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Progress Overview -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Current Language Progress -->
+                    <div class="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-6 bg-red-500 rounded-sm"></div>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-slate-800" data-bind="currentLanguage.name">Spanish</h3>
+                                    <p class="text-sm text-slate-600" data-bind="currentLanguage.level">Intermediate (B1)</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-primary" data-bind="currentLanguage.progress">68%</div>
+                                <div class="text-sm text-slate-600">Complete</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-white rounded-full h-3 mb-4">
+                            <div class="bg-gradient-to-r from-primary to-secondary h-3 rounded-full transition-all duration-300" 
+                                 style="width: 68%" data-bind="currentLanguage.progressWidth"></div>
+                        </div>
+                        
+                        <!-- Current Lesson -->
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-slate-600">Current Lesson:</span>
+                            <span class="font-medium text-slate-800" data-bind="currentLesson.title">Past Tense Conversations</span>
+                        </div>
+                    </div>
+
+                    <!-- Learning Statistics -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white rounded-xl p-4 border border-slate-200 text-center">
+                            <div class="w-10 h-10 bg-primary/10 rounded-lg mx-auto mb-2 flex items-center justify-center">
+                                <i class="fas fa-fire text-primary"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-slate-800" data-bind="stats.currentStreak">7</div>
+                            <div class="text-xs text-slate-600">Day Streak</div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-4 border border-slate-200 text-center">
+                            <div class="w-10 h-10 bg-secondary/10 rounded-lg mx-auto mb-2 flex items-center justify-center">
+                                <i class="fas fa-clock text-secondary"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-slate-800" data-bind="stats.totalTime">45</div>
+                            <div class="text-xs text-slate-600">Hours Learned</div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-4 border border-slate-200 text-center">
+                            <div class="w-10 h-10 bg-accent/10 rounded-lg mx-auto mb-2 flex items-center justify-center">
+                                <i class="fas fa-trophy text-accent"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-slate-800" data-bind="stats.achievements">12</div>
+                            <div class="text-xs text-slate-600">Achievements</div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-4 border border-slate-200 text-center">
+                            <div class="w-10 h-10 bg-success/10 rounded-lg mx-auto mb-2 flex items-center justify-center">
+                                <i class="fas fa-brain text-success"></i>
+                            </div>
+                            <div class="text-2xl font-bold text-slate-800" data-bind="stats.wordsLearned">1,247</div>
+                            <div class="text-xs text-slate-600">Words Learned</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Lessons -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Continue Learning</h3>
+                        <div class="space-y-3">
+                            <!-- @MAP: recentLessons.map(lesson => ( -->
+                            <div class="flex items-center space-x-4 p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer" 
+                                 data-event="click:continueLesson" data-mock="true">
+                                <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-book text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-slate-800">Restaurant Conversations</h4>
+                                    <p class="text-sm text-slate-600">Learn dining vocabulary and phrases</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-medium text-primary">75% Complete</div>
+                                    <div class="w-16 bg-slate-200 rounded-full h-1 mt-1">
+                                        <div class="bg-primary h-1 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                            
+                            <div class="flex items-center space-x-4 p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer" data-mock="true">
+                                <div class="w-12 h-12 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-microphone text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-slate-800">Pronunciation Practice</h4>
+                                    <p class="text-sm text-slate-600">Master difficult sounds and accents</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm font-medium text-secondary">New</div>
+                                    <div class="w-16 bg-slate-200 rounded-full h-1 mt-1">
+                                        <div class="bg-secondary h-1 rounded-full" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Daily Goal -->
+                    <div class="bg-gradient-to-br from-accent/10 to-accent/5 rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Daily Goal</h3>
+                        <div class="text-center">
+                            <div class="relative w-24 h-24 mx-auto mb-4">
+                                <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                                    <path class="text-slate-200" stroke="currentColor" stroke-width="3" fill="none" 
+                                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path class="text-accent" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="75, 100"
+                                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-slate-800" data-bind="dailyGoal.progress">75%</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-2" data-bind="dailyGoal.description">15 minutes completed</p>
+                            <p class="text-xs text-slate-500">5 minutes remaining</p>
+                        </div>
+                    </div>
+
+                    <!-- Recent Achievements -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Recent Achievements</h3>
+                        <div class="space-y-3">
+                            <!-- @MAP: recentAchievements.map(achievement => ( -->
+                            <div class="flex items-center space-x-3" data-mock="true">
+                                <div class="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-medal text-accent"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-slate-800">Week Warrior</h4>
+                                    <p class="text-xs text-slate-600">7 day learning streak</p>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                            
+                            <div class="flex items-center space-x-3" data-mock="true">
+                                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-star text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-slate-800">Vocabulary Master</h4>
+                                    <p class="text-xs text-slate-600">100 new words learned</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3" data-mock="true">
+                                <div class="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-volume-up text-secondary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-slate-800">Perfect Pronunciation</h4>
+                                    <p class="text-xs text-slate-600">95% accuracy in speaking</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language Selection -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Available Languages</h3>
+                        <div class="space-y-2">
+                            <!-- @MAP: availableLanguages.map(language => ( -->
+                            <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-6 h-4 bg-red-500 rounded-sm"></div>
+                                    <span class="text-sm font-medium text-slate-700">Spanish</span>
+                                </div>
+                                <span class="text-xs text-primary font-medium">Current</span>
+                            </div>
+                            <!-- @END_MAP )) -->
+                            
+                            <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-6 h-4 bg-blue-500 rounded-sm"></div>
+                                    <span class="text-sm font-medium text-slate-700">French</span>
+                                </div>
+                                <span class="text-xs text-slate-500">Available</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer" data-mock="true">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-6 h-4 bg-gray-800 rounded-sm"></div>
+                                    <span class="text-sm font-medium text-slate-700">German</span>
+                                </div>
+                                <span class="text-xs text-slate-500">Available</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Dashboard -->
+
+    <!-- @COMPONENT: InteractiveLessons [lesson interface with exercises] -->
+    <section id="lessons" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">Interactive Learning Experience</h2>
+                <p class="text-lg text-slate-600">Engage with dynamic exercises designed to accelerate your learning</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Vocabulary Flashcard Exercise -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-2">Vocabulary Practice</h3>
+                        <p class="text-sm text-slate-600">Click to reveal the translation</p>
+                    </div>
+                    
+                    <!-- @FUNCTIONALITY: Flashcard should flip on click to show translation -->
+                    <div class="relative h-64 mb-6 cursor-pointer" data-event="click:flipCard">
+                        <div class="absolute inset-0 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center transform transition-transform duration-300 hover:scale-105">
+                            <div class="text-center text-white">
+                                <div class="text-4xl font-bold mb-2" data-bind="flashcard.word">Hola</div>
+                                <div class="text-lg opacity-90">Spanish</div>
+                                <div class="mt-4">
+                                    <button class="bg-white/20 px-4 py-2 rounded-lg text-sm" data-event="click:playPronunciation">
+                                        <i class="fas fa-volume-up mr-2"></i>Listen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-primary rounded-full"></div>
+                            <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
+                            <div class="w-2 h-2 bg-slate-300 rounded-full"></div>
+                            <span class="text-sm text-slate-600 ml-2">1 of 10</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-lg text-sm hover:bg-slate-200 transition-colors">
+                                Skip
+                            </button>
+                            <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-primary/90 transition-colors">
+                                I Know This
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grammar Quiz -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-2">Grammar Challenge</h3>
+                        <p class="text-sm text-slate-600">Choose the correct form of the verb</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4">
+                            <p class="text-lg text-slate-800">
+                                Yo <span class="font-bold text-primary">______</span> español todos los días.
+                            </p>
+                            <p class="text-sm text-slate-600 mt-2">I ______ Spanish every day.</p>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <!-- @MAP: grammarOptions.map(option => ( -->
+                            <button class="w-full p-4 text-left border-2 border-slate-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors" 
+                                    data-event="click:selectAnswer" data-answer="study" data-mock="true">
+                                <span class="font-medium text-slate-800">estudio</span>
+                                <span class="text-sm text-slate-600 ml-2">(I study)</span>
+                            </button>
+                            <!-- @END_MAP )) -->
+                            
+                            <button class="w-full p-4 text-left border-2 border-slate-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors" 
+                                    data-event="click:selectAnswer" data-answer="studied" data-mock="true">
+                                <span class="font-medium text-slate-800">estudié</span>
+                                <span class="text-sm text-slate-600 ml-2">(I studied)</span>
+                            </button>
+                            
+                            <button class="w-full p-4 text-left border-2 border-slate-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors" 
+                                    data-event="click:selectAnswer" data-answer="will_study" data-mock="true">
+                                <span class="font-medium text-slate-800">estudiaré</span>
+                                <span class="text-sm text-slate-600 ml-2">(I will study)</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-slate-600">Question 3 of 8</div>
+                        <button class="bg-secondary text-white px-6 py-2 rounded-lg font-medium hover:bg-secondary/90 transition-colors">
+                            Check Answer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pronunciation Practice -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-2">Pronunciation Practice</h3>
+                        <p class="text-sm text-slate-600">Listen and repeat to improve your accent</p>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <div class="bg-gradient-to-br from-secondary/10 to-secondary/5 rounded-2xl p-6 mb-4">
+                            <div class="text-2xl font-bold text-slate-800 mb-2" data-bind="pronunciation.phrase">
+                                "¿Cómo está usted?"
+                            </div>
+                            <div class="text-lg text-slate-600">"How are you?" (formal)</div>
+                        </div>
+                        
+                        <div class="flex items-center justify-center space-x-4 mb-4">
+                            <button class="bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center hover:bg-secondary/90 transition-colors" 
+                                    data-event="click:playAudio">
+                                <i class="fas fa-play text-xl"></i>
+                            </button>
+                            <div class="text-sm text-slate-600">Listen to native speaker</div>
+                        </div>
+                    </div>
+                    
+                    <!-- @FUNCTIONALITY: Should use browser speech recognition API for recording -->
+                    <div class="text-center">
+                        <button class="bg-error text-white w-20 h-20 rounded-full flex items-center justify-center mb-4 mx-auto hover:bg-error/90 transition-colors shadow-lg" 
+                                data-event="click:startRecording" data-implementation="Should implement speech recognition">
+                            <i class="fas fa-microphone text-2xl"></i>
+                        </button>
+                        <p class="text-sm text-slate-600 mb-2">Hold to record your pronunciation</p>
+                        <div class="bg-slate-100 rounded-lg p-3">
+                            <div class="text-sm text-slate-600">Accuracy Score</div>
+                            <div class="text-2xl font-bold text-success" data-bind="pronunciation.accuracy">92%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sentence Building -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-2">Sentence Builder</h3>
+                        <p class="text-sm text-slate-600">Arrange the words to form a correct sentence</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4">
+                            <p class="text-sm text-slate-600 mb-2">Build this sentence:</p>
+                            <p class="text-lg font-medium text-slate-800">"The students study in the library"</p>
+                        </div>
+                        
+                        <!-- Drop Zone -->
+                        <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 min-h-[60px] mb-4 flex items-center flex-wrap gap-2" 
+                             data-implementation="Should implement drag and drop functionality">
+                            <span class="text-slate-400">Drag words here...</span>
+                        </div>
+                        
+                        <!-- Word Bank -->
+                        <div class="flex flex-wrap gap-2">
+                            <!-- @MAP: sentenceWords.map(word => ( -->
+                            <div class="bg-primary text-white px-4 py-2 rounded-lg cursor-move select-none hover:bg-primary/90 transition-colors" 
+                                 draggable="true" data-word="Los" data-mock="true">
+                                Los
+                            </div>
+                            <!-- @END_MAP )) -->
+                            
+                            <div class="bg-primary text-white px-4 py-2 rounded-lg cursor-move select-none hover:bg-primary/90 transition-colors" 
+                                 draggable="true" data-word="estudiantes" data-mock="true">
+                                estudiantes
+                            </div>
+                            
+                            <div class="bg-primary text-white px-4 py-2 rounded-lg cursor-move select-none hover:bg-primary/90 transition-colors" 
+                                 draggable="true" data-word="estudian" data-mock="true">
+                                estudian
+                            </div>
+                            
+                            <div class="bg-primary text-white px-4 py-2 rounded-lg cursor-move select-none hover:bg-primary/90 transition-colors" 
+                                 draggable="true" data-word="en" data-mock="true">
+                                en
+                            </div>
+                            
+                            <div class="bg-primary text-white px-4 py-2 rounded-lg cursor-move select-none hover:bg-primary/90 transition-colors" 
+                                 draggable="true" data-word="la" data-mock="true">
+                                la
+                            </div>
+                            
+                            <div class="bg-primary text-white px-4 py-2 rounded-lg cursor-move select-none hover:bg-primary/90 transition-colors" 
+                                 draggable="true" data-word="biblioteca" data-mock="true">
+                                biblioteca
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button class="bg-accent text-white px-6 py-2 rounded-lg font-medium hover:bg-accent/90 transition-colors">
+                            Check Sentence
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: InteractiveLessons -->
+
+    <!-- @COMPONENT: CulturalStories [cultural immersion content] -->
+    <section id="stories" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">Cultural Stories & Immersion</h2>
+                <p class="text-lg text-slate-600">Learn language through authentic cultural experiences and stories</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Featured Story -->
+                <div class="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-2xl p-8">
+                    <div class="mb-6">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">Featured Story</span>
+                            <span class="text-sm text-slate-600">Intermediate Level</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Una Cena Familiar</h3>
+                        <p class="text-slate-600">Experience a traditional Spanish family dinner and learn cultural dining etiquette</p>
+                    </div>
+                    
+                    <!-- Beautiful image of Spanish family dinner -->
+                    <div class="rounded-xl overflow-hidden mb-6">
+                        <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=400" 
+                             alt="Spanish family dinner with traditional food" class="w-full h-48 object-cover">
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-clock text-slate-600"></i>
+                                <span class="text-sm text-slate-600">15 min read</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-book text-slate-600"></i>
+                                <span class="text-sm text-slate-600">Interactive dialogue</span>
+                            </div>
+                        </div>
+                        
+                        <button class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-primary/90 transition-colors" 
+                                data-event="click:startStory">
+                            Start Reading
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Story Collection -->
+                <div class="space-y-6">
+                    <!-- @MAP: culturalStories.map(story => ( -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer" 
+                         data-event="click:openStory" data-mock="true">
+                        <div class="flex space-x-4">
+                            <!-- Beautiful Spanish market scene -->
+                            <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="https://pixabay.com/get/gb7ad9955aa701bf50410f681da5b0f16abebbab4f6b7c7eb08424724b9c5fffa01840082d073b6d1eb925e5a41c2154b80d188b06aba23c56c523fd2e8b38a60_1280.jpg" 
+                                     alt="Vibrant Spanish market with fresh produce" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="bg-secondary/10 text-secondary px-2 py-1 rounded text-xs font-medium">Beginner</span>
+                                    <span class="text-xs text-slate-500">Culture</span>
+                                </div>
+                                <h4 class="font-semibold text-slate-800 mb-1">El Mercado Local</h4>
+                                <p class="text-sm text-slate-600">Learn shopping vocabulary at a traditional Spanish market</p>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-slate-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                    
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer" data-mock="true">
+                        <div class="flex space-x-4">
+                            <!-- Beautiful Spanish festival scene -->
+                            <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="https://pixabay.com/get/g998dad67eea1c4ceaea86902415beb36c2c72b71102def4a434a01df94c4813d09e160a08a56ac813508c525ed26cf881cfb4c2fc34ec9b1ec19143534d57508_1280.jpg" 
+                                     alt="Colorful Spanish festival with traditional decorations" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="bg-accent/10 text-accent px-2 py-1 rounded text-xs font-medium">Intermediate</span>
+                                    <span class="text-xs text-slate-500">Tradition</span>
+                                </div>
+                                <h4 class="font-semibold text-slate-800 mb-1">La Fiesta del Pueblo</h4>
+                                <p class="text-sm text-slate-600">Experience a traditional village celebration and local customs</p>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-slate-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer" data-mock="true">
+                        <div class="flex space-x-4">
+                            <!-- Beautiful Spanish coastal town -->
+                            <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&h=200" 
+                                     alt="Scenic Spanish coastal town with white buildings" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <span class="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">Advanced</span>
+                                    <span class="text-xs text-slate-500">Travel</span>
+                                </div>
+                                <h4 class="font-semibold text-slate-800 mb-1">Viaje a la Costa</h4>
+                                <p class="text-sm text-slate-600">Plan a trip to Spain's beautiful coastal regions</p>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-slate-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cultural Tips Section -->
+            <div class="mt-12 bg-gradient-to-r from-accent/10 to-accent/5 rounded-2xl p-8">
+                <h3 class="text-xl font-bold text-slate-800 mb-6">Cultural Insights</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-accent/20 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-utensils text-accent text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-slate-800 mb-2">Dining Etiquette</h4>
+                        <p class="text-sm text-slate-600">Learn proper table manners and conversation topics for Spanish meals</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-accent/20 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-handshake text-accent text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-slate-800 mb-2">Greetings & Gestures</h4>
+                        <p class="text-sm text-slate-600">Master formal and informal greetings used across Spanish-speaking countries</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-accent/20 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-calendar text-accent text-2xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-slate-800 mb-2">Holidays & Traditions</h4>
+                        <p class="text-sm text-slate-600">Discover important cultural celebrations and their significance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: CulturalStories -->
+
+    <!-- @COMPONENT: Community [language exchange and social features] -->
+    <section id="community" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">Connect & Practice Together</h2>
+                <p class="text-lg text-slate-600">Join our global community of language learners and native speakers</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Language Exchange -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-semibold text-slate-800">Language Exchange</h3>
+                        <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-circle text-xs mr-1"></i>Online Now
+                        </span>
+                    </div>
+                    
+                    <!-- @MAP: languagePartners.map(partner => ( -->
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" 
+                             data-event="click:connectWithPartner" data-mock="true">
+                            <div class="relative">
+                                <!-- Profile image of language exchange partner -->
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" 
+                                     alt="Language partner Maria from Madrid" class="w-12 h-12 rounded-full object-cover">
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-full border-2 border-white"></div>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-slate-800">María García</h4>
+                                <p class="text-sm text-slate-600">Native Spanish speaker from Madrid</p>
+                                <p class="text-xs text-slate-500">Learning English • Available now</p>
+                            </div>
+                            <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-primary/90 transition-colors">
+                                Connect
+                            </button>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center space-x-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" data-mock="true">
+                            <div class="relative">
+                                <!-- Profile image of language exchange partner -->
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" 
+                                     alt="Language partner Carlos from Barcelona" class="w-12 h-12 rounded-full object-cover">
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-accent rounded-full border-2 border-white"></div>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-slate-800">Carlos López</h4>
+                                <p class="text-sm text-slate-600">Native Spanish speaker from Barcelona</p>
+                                <p class="text-xs text-slate-500">Learning French • Online 2h ago</p>
+                            </div>
+                            <button class="bg-secondary text-white px-4 py-2 rounded-lg text-sm hover:bg-secondary/90 transition-colors">
+                                Message
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button class="text-primary font-medium text-sm hover:text-primary/80 transition-colors" 
+                                data-event="click:findMorePartners">
+                            Find More Partners <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Community Chat -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-semibold text-slate-800">Community Chat</h3>
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2 h-2 bg-primary rounded-full"></span>
+                            <span class="text-sm text-slate-600">247 online</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Messages -->
+                    <div class="space-y-4 mb-6 h-64 overflow-y-auto">
+                        <!-- @MAP: chatMessages.map(message => ( -->
+                        <div class="flex space-x-3" data-mock="true">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" 
+                                 alt="Chat user Elena" class="w-8 h-8 rounded-full object-cover">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="font-medium text-slate-800 text-sm">Elena_Madrid</span>
+                                    <span class="text-xs text-slate-500">2m ago</span>
+                                </div>
+                                <p class="text-sm text-slate-700">¿Alguien me puede ayudar con el pretérito imperfecto? 🤔</p>
+                                <p class="text-xs text-slate-500 mt-1">Can someone help me with the imperfect tense?</p>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                        
+                        <div class="flex space-x-3" data-mock="true">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100" 
+                                 alt="Chat user David" class="w-8 h-8 rounded-full object-cover">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="font-medium text-slate-800 text-sm">David_Teacher</span>
+                                    <span class="bg-accent/20 text-accent px-2 py-0.5 rounded text-xs">Native</span>
+                                    <span class="text-xs text-slate-500">1m ago</span>
+                                </div>
+                                <p class="text-sm text-slate-700">¡Claro! El pretérito imperfecto se usa para acciones habituales en el pasado...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-3" data-mock="true">
+                            <img src="https://pixabay.com/get/g291b53dc1c2ecec37a94f8c234a78852c099f169580184adc9845e13e828eacda0db3dc7aae010e665a5cf6d49c4a643e56f49d6c92a2c6f07657c3ece87e0de_1280.jpg" 
+                                 alt="Chat user Sarah" class="w-8 h-8 rounded-full object-cover">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="font-medium text-slate-800 text-sm">Sarah_NYC</span>
+                                    <span class="text-xs text-slate-500">30s ago</span>
+                                </div>
+                                <p class="text-sm text-slate-700">¡Gracias David! That explanation really helped me understand 😊</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Message Input -->
+                    <div class="flex space-x-2">
+                        <input type="text" placeholder="Type your message..." 
+                               class="flex-1 px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" 
+                               data-implementation="Should implement real-time chat functionality">
+                        <button class="bg-primary text-white px-4 py-3 rounded-lg hover:bg-primary/90 transition-colors" 
+                                data-event="click:sendMessage">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Study Groups -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-6">Study Groups</h3>
+                    
+                    <div class="space-y-4">
+                        <!-- @MAP: studyGroups.map(group => ( -->
+                        <div class="border border-slate-200 rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer" 
+                             data-event="click:joinGroup" data-mock="true">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium text-slate-800">Spanish Conversation Circle</h4>
+                                <span class="bg-primary/10 text-primary px-2 py-1 rounded text-xs">Live Now</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-3">Practice everyday conversations with intermediate learners</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex -space-x-2">
+                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=50&h=50" 
+                                             alt="Group member" class="w-6 h-6 rounded-full border-2 border-white object-cover">
+                                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=50&h=50" 
+                                             alt="Group member" class="w-6 h-6 rounded-full border-2 border-white object-cover">
+                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=50&h=50" 
+                                             alt="Group member" class="w-6 h-6 rounded-full border-2 border-white object-cover">
+                                    </div>
+                                    <span class="text-sm text-slate-600">12 members</span>
+                                </div>
+                                <button class="bg-secondary text-white px-3 py-1 rounded text-sm hover:bg-secondary/90 transition-colors">
+                                    Join
+                                </button>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                        
+                        <div class="border border-slate-200 rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer" data-mock="true">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium text-slate-800">Grammar Bootcamp</h4>
+                                <span class="bg-accent/10 text-accent px-2 py-1 rounded text-xs">Starts 6PM</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-3">Intensive grammar practice session for advanced learners</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex -space-x-2">
+                                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=50&h=50" 
+                                             alt="Group member" class="w-6 h-6 rounded-full border-2 border-white object-cover">
+                                        <img src="https://pixabay.com/get/g291b53dc1c2ecec37a94f8c234a78852c099f169580184adc9845e13e828eacda0db3dc7aae010e665a5cf6d49c4a643e56f49d6c92a2c6f07657c3ece87e0de_1280.jpg" 
+                                             alt="Group member" class="w-6 h-6 rounded-full border-2 border-white object-cover">
+                                    </div>
+                                    <span class="text-sm text-slate-600">8 members</span>
+                                </div>
+                                <button class="border border-slate-300 text-slate-700 px-3 py-1 rounded text-sm hover:border-primary hover:text-primary transition-colors">
+                                    Reserve
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Conversation Partner -->
+                <div class="bg-gradient-to-br from-secondary/5 to-primary/5 rounded-2xl p-8">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-secondary to-primary rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-robot text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-800 mb-2">AI Conversation Partner</h3>
+                        <p class="text-slate-600">Practice speaking with our AI tutor available 24/7</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-lg p-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-secondary to-primary rounded-full flex items-center justify-center">
+                                    <i class="fas fa-robot text-white text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-slate-700 mb-2">¡Hola! Soy tu tutor virtual. ¿De qué te gustaría hablar hoy?</p>
+                                    <p class="text-xs text-slate-500">Hi! I'm your virtual tutor. What would you like to talk about today?</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm hover:border-primary hover:text-primary transition-colors" 
+                                    data-event="click:startConversation" data-topic="daily">
+                                Daily Activities
+                            </button>
+                            <button class="bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm hover:border-primary hover:text-primary transition-colors" 
+                                    data-event="click:startConversation" data-topic="travel">
+                                Travel Plans
+                            </button>
+                            <button class="bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm hover:border-primary hover:text-primary transition-colors" 
+                                    data-event="click:startConversation" data-topic="food">
+                                Food & Cooking
+                            </button>
+                            <button class="bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm hover:border-primary hover:text-primary transition-colors" 
+                                    data-event="click:startConversation" data-topic="work">
+                                Work & Career
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Community -->
+
+    <!-- @COMPONENT: Footer [site navigation and links] -->
+    <footer class="bg-slate-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-globe text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold">LinguaLearn</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">
+                        Master any language with AI-powered learning, cultural immersion, and global community support.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Learning</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Language Courses</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Pronunciation Tools</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Grammar Hub</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Cultural Stories</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Community</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Language Exchange</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Study Groups</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Discussion Forums</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Native Speakers</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-700 mt-8 pt-8 flex flex-col md:flex-row items-center justify-between">
+                <p class="text-slate-400 text-sm">© 2024 LinguaLearn. All rights reserved.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-slate-400 hover:text-white transition-colors">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        (function() {
+            // Minimal interactivity for demonstration
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Simple flashcard flip demonstration
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-event="click:flipCard"]')) {
+                    const card = e.target.closest('[data-event="click:flipCard"]');
+                    // TODO: Implement actual flashcard flip logic
+                    console.log('Flashcard flip triggered');
+                }
+            });
+
+            // Audio playback placeholder
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-event="click:playAudio"]') || 
+                    e.target.closest('[data-event="click:playPronunciation"]')) {
+                    // TODO: Implement actual audio playback
+                    console.log('Audio playback triggered');
+                }
+            });
+
+            // Recording placeholder
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-event="click:startRecording"]')) {
+                    // TODO: Implement speech recognition API
+                    console.log('Speech recording triggered');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
