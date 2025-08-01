@@ -4,14 +4,13 @@
 
 The platform features a custom logo with a globe icon inside speech bubbles, representing global communication and language learning. The branding emphasizes the universal nature of the platform with the simple, memorable name "Learn a Language".
 
-## Recent Updates (January 2025)
-- **Homepage Enhancement**: Added comprehensive content sections including effective learning methods, app download options, feature highlights, video integration with native speakers, interactive learning demos, testimonials, and newsletter signup
-- **Animated Background**: Implemented low-opacity animated background on homepage featuring:
-  - Rotating language rings with country codes
-  - Text sliding animations showing word translations (Hello→Hola, Bonjour←Guten Tag, 你好→Привет)
-  - Flag-to-dictionary transformations showing vocabulary examples
-  - Floating language learning icons (globe, books, chat bubbles)
-- **Visual Design**: Enhanced with multiple sections showcasing platform features, real speaker videos, community testimonials, and social proof elements
+## Recent Updates (August 2025)
+- **Language Limitation**: Restricted platform to support only 6 languages (English, Russian, Mandarin, French, German, Spanish)
+- **Feature Removal**: Removed Dashboard, Lessons, Community, and Stories pages and functionality
+- **Database Cleanup**: Deleted unused database tables (lessons, cultural_stories, chat_messages, daily_activity, study_sessions, user_languages, language_exchanges)
+- **Navigation Simplification**: Removed navigation tabs from header, signin/signup now redirect to 404 page
+- **Schema Optimization**: Streamlined database schema to focus on core vocabulary and grammar functionality
+- **Animated Background**: Updated animations to only show supported language codes
 
 # User Preferences
 
@@ -30,14 +29,13 @@ Preferred communication style: Simple, everyday language.
 ## Backend Architecture
 - **Runtime**: Node.js with TypeScript
 - **Framework**: Express.js for REST API endpoints
-- **Real-time Communication**: WebSocket server for live chat and community features
+- **API Structure**: RESTful endpoints for language learning core functionality
 - **Database ORM**: Drizzle ORM with type-safe schema definitions
 - **Session Management**: Express sessions with PostgreSQL session store
-- **API Structure**: RESTful endpoints with WebSocket integration for real-time features
 
 ## Data Storage Solutions
 - **Primary Database**: PostgreSQL with Neon serverless configuration
-- **Database Schema**: Comprehensive schema supporting users, languages, lessons, vocabulary, grammar exercises, cultural stories, achievements, study sessions, and community features
+- **Database Schema**: Streamlined schema supporting users, languages, vocabulary, grammar exercises, and achievements
 - **Migration System**: Drizzle Kit for database migrations and schema management
 - **Connection Pooling**: Neon serverless connection pooling for optimal performance
 
