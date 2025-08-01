@@ -11,17 +11,11 @@ export default function Home() {
 
   const languages = [
     { code: "en", name: "English", flag: "🇺🇸" },
-    { code: "es", name: "Español", flag: "🇪🇸" },
+    { code: "ru", name: "Русский", flag: "🇷🇺" },
+    { code: "zh", name: "中文", flag: "🇨🇳" },
     { code: "fr", name: "Français", flag: "🇫🇷" },
     { code: "de", name: "Deutsch", flag: "🇩🇪" },
-    { code: "zh", name: "中文", flag: "🇨🇳" },
-    { code: "ja", name: "日本語", flag: "🇯🇵" },
-    { code: "ko", name: "한국어", flag: "🇰🇷" },
-    { code: "pt", name: "Português", flag: "🇵🇹" },
-    { code: "it", name: "Italiano", flag: "🇮🇹" },
-    { code: "ru", name: "Русский", flag: "🇷🇺" },
-    { code: "ar", name: "العربية", flag: "🇸🇦" },
-    { code: "hi", name: "हिन्दी", flag: "🇮🇳" }
+    { code: "es", name: "Español", flag: "🇪🇸" }
   ];
 
   // Fetch languages from database
@@ -50,12 +44,6 @@ export default function Home() {
             </div>
             
             <div className="flex items-center space-x-8">
-              <nav className="hidden md:flex space-x-6">
-                <Link href="/lessons" className="hover:text-blue-200 transition-colors">About</Link>
-                <Link href="/community" className="hover:text-blue-200 transition-colors">Community</Link>
-                <Link href="/stories" className="hover:text-blue-200 transition-colors">Contact</Link>
-              </nav>
-              
               <div className="flex items-center space-x-4">
                 <select 
                   value={selectedLanguage} 
@@ -69,13 +57,13 @@ export default function Home() {
                   ))}
                 </select>
                 
-                <Link href="/dashboard">
+                <Link href="/not-found">
                   <Button variant="ghost" className="text-white hover:text-blue-200 hover:bg-transparent">
                     Log in
                   </Button>
                 </Link>
                 
-                <Link href="/dashboard">
+                <Link href="/not-found">
                   <Button variant="ghost" className="text-white hover:text-blue-200 hover:bg-transparent font-semibold">
                     Sign up
                   </Button>
@@ -101,8 +89,6 @@ export default function Home() {
           <div className="absolute bottom-24 right-32 w-28 h-28 border-3 border-green-400 rounded-full animate-spin-reverse">
             <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 text-sm font-bold text-green-600">中文</div>
             <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 text-sm font-bold text-green-600">RU</div>
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 text-sm font-bold text-green-600">JA</div>
-            <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 text-sm font-bold text-green-600">AR</div>
           </div>
 
           {/* Floating Text Animations - using empty margins/padding areas */}
@@ -175,7 +161,7 @@ export default function Home() {
               
               <div className="grid grid-cols-2 gap-3 max-w-sm">
                 {availableLanguages.map((lang) => (
-                  <Link key={lang.code} href="/dashboard">
+                  <Link key={lang.code} href="/not-found">
                     <div className="flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:bg-white hover:shadow-md transition-all cursor-pointer">
                       <div className="text-2xl">
                         {lang.flagEmoji}
