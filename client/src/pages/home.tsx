@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, Download, Apple, Smartphone, Facebook, Instagram, Twitter, Linkedin, Send } from "lucide-react";
+import { Play, Download, Apple, Smartphone, Facebook, Instagram, Twitter, Linkedin, Send, Check } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 
 export default function Home() {
@@ -511,8 +511,108 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Interactive Learning Experience Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Interactive Demo */}
+            <div className="relative">
+              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-md mx-auto">
+                <div className="relative h-80 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=600&h=400&fit=crop')"}}>
+                    <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+                  </div>
+                  
+                  {/* Interactive Elements */}
+                  <div className="relative z-10 space-y-4">
+                    <div className="bg-white bg-opacity-90 rounded-lg p-3 max-w-xs">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">🎯</span>
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900">¿Cómo estás?</div>
+                          <div className="text-sm text-gray-600">How are you?</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-blue-500 bg-opacity-90 rounded-lg p-3 max-w-xs ml-auto">
+                      <div className="text-white font-medium">Muy bien, gracias</div>
+                      <div className="text-blue-100 text-sm">Very well, thank you</div>
+                    </div>
+                  </div>
+                  
+                  {/* Play Button */}
+                  <div className="absolute bottom-4 right-4">
+                    <div className="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center cursor-pointer hover:bg-opacity-100 transition-all">
+                      <Play className="w-4 h-4 text-gray-800 ml-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -left-4 w-16 h-16 bg-yellow-300 rounded-full opacity-70"></div>
+              <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-purple-300 rounded-full opacity-60"></div>
+              <div className="absolute top-1/2 -right-8 w-12 h-12 bg-green-300 rounded-full opacity-50"></div>
+            </div>
+            
+            {/* Right Side - Content */}
+            <div className="space-y-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+                Learn through real conversations
+              </h2>
+              
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Experience authentic language learning with interactive conversations, 
+                cultural context, and instant feedback to build your confidence naturally.
+              </p>
+              
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-gray-700 font-medium">AI-powered pronunciation feedback</span>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-gray-700 font-medium">Personalized learning paths</span>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-gray-700 font-medium">Cultural immersion through stories</span>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-gray-700 font-medium">Gamified progress tracking</span>
+                </div>
+              </div>
+              
+              <div className="pt-4">
+                <Link href="/dashboard">
+                  <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg rounded-full shadow-lg">
+                    Start for Free
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* All Languages Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">All Available Languages</h2>
           <p className="text-center text-gray-600 mb-12">Choose from our complete selection</p>
