@@ -187,7 +187,7 @@ export default function ProgressDashboard() {
     enabled: false, // Disabled for demo
   });
 
-  const dailyGoalProgress = Math.min((15 / dashboardData.user.dailyGoalMinutes) * 100, 100); // 15 minutes completed today
+  const dailyGoalProgress = Math.min((15 / (dashboardData.user.dailyGoalMinutes || 30)) * 100, 100); // 15 minutes completed today
 
   const handleLanguageSwitch = async (languageId: string) => {
     try {

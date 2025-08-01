@@ -1,6 +1,8 @@
 # Overview
 
-LinguaLearn is a comprehensive language learning platform built as a full-stack web application. The platform combines interactive learning exercises, AI-powered pronunciation feedback, cultural immersion through stories, and real-time community features to create an engaging multilingual educational experience. The application supports vocabulary building, grammar practice, pronunciation training, and cultural learning through gamified interactions and social learning features.
+"Learn a Language" is a comprehensive language learning platform built as a full-stack web application. The platform combines interactive learning exercises, AI-powered pronunciation feedback, cultural immersion through stories, and real-time community features to create an engaging multilingual educational experience. The application supports vocabulary building, grammar practice, pronunciation training, and cultural learning through gamified interactions and social learning features.
+
+The platform features a custom logo with a globe icon inside speech bubbles, representing global communication and language learning. The branding emphasizes the universal nature of the platform with the simple, memorable name "Learn a Language".
 
 # User Preferences
 

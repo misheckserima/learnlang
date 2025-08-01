@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Volume2, RotateCcw } from "lucide-react";
-import { playAudio } from "@/lib/audio-utils";
+import { playTextToSpeech } from "@/lib/audio-utils";
 import type { VocabularyWord } from "@shared/schema";
 
 export default function Flashcard() {

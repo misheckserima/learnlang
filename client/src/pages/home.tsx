@@ -3,7 +3,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Navigation from "@/components/navigation";
-import { Globe, Play, Users, Trophy, Book, MessageSquare } from "lucide-react";
+import { Play, Users, Trophy, Book, MessageSquare, Globe } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 
 export default function Home() {
   const [stats] = useState({
@@ -20,6 +21,9 @@ export default function Home() {
       <section className="bg-gradient-to-br from-emerald-50 via-blue-50 to-amber-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-8">
+            <div className="flex justify-center mb-8">
+              <Logo size="xl" />
+            </div>
             <div className="space-y-4">
               <h1 className="text-4xl md:text-6xl font-bold text-slate-800 leading-tight">
                 Master Any Language with
@@ -67,7 +71,7 @@ export default function Home() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-800 mb-4">Why Choose LinguaLearn?</h2>
+            <h2 className="text-3xl font-bold text-slate-800 mb-4">Why Choose Learn a Language?</h2>
             <p className="text-lg text-slate-600">Everything you need to master a new language</p>
           </div>
 

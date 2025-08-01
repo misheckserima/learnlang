@@ -154,21 +154,50 @@ export class DatabaseStorage implements IStorage {
 
   // User language operations
   async getUserLanguages(userId: string): Promise<(UserLanguage & { language: Language })[]> {
-    return await db
-      .select()
+    const results = await db
+      .select({
+        id: userLanguages.id,
+        userId: userLanguages.userId,
+        languageId: userLanguages.languageId,
+        level: userLanguages.level,
+        progressPercentage: userLanguages.progressPercentage,
+        totalLessonsCompleted: userLanguages.totalLessonsCompleted,
+        totalWordsLearned: userLanguages.totalWordsLearned,
+        totalTimeSpentMinutes: userLanguages.totalTimeSpentMinutes,
+        isCurrent: userLanguages.isCurrent,
+        createdAt: userLanguages.createdAt,
+        updatedAt: userLanguages.updatedAt,
+        language: languages,
+      })
       .from(userLanguages)
       .innerJoin(languages, eq(userLanguages.languageId, languages.id))
       .where(eq(userLanguages.userId, userId))
       .orderBy(desc(userLanguages.isCurrent), desc(userLanguages.createdAt));
+    
+    return results as (UserLanguage & { language: Language })[];
   }
 
   async getUserCurrentLanguage(userId: string): Promise<(UserLanguage & { language: Language }) | undefined> {
     const [result] = await db
-      .select()
+      .select({
+        id: userLanguages.id,
+        userId: userLanguages.userId,
+        languageId: userLanguages.languageId,
+        level: userLanguages.level,
+        progressPercentage: userLanguages.progressPercentage,
+        totalLessonsCompleted: userLanguages.totalLessonsCompleted,
+        totalWordsLearned: userLanguages.totalWordsLearned,
+        totalTimeSpentMinutes: userLanguages.totalTimeSpentMinutes,
+        isCurrent: userLanguages.isCurrent,
+        createdAt: userLanguages.createdAt,
+        updatedAt: userLanguages.updatedAt,
+        language: languages,
+      })
       .from(userLanguages)
       .innerJoin(languages, eq(userLanguages.languageId, languages.id))
       .where(and(eq(userLanguages.userId, userId), eq(userLanguages.isCurrent, true)));
-    return result;
+    
+    return result as (UserLanguage & { language: Language }) | undefined;
   }
 
   async createUserLanguage(userLanguage: InsertUserLanguage): Promise<UserLanguage> {
@@ -366,12 +395,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserAchievements(userId: string): Promise<(UserAchievement & { achievement: Achievement })[]> {
-    return await db
-      .select()
+    const results = await db
+      .select({
+        id: userAchievements.id,
+        userId: userAchievements.userId,
+        achievementId: userAchievements.achievementId,
+        earnedAt: userAchievements.earnedAt,
+        achievement: achievements,
+      })
       .from(userAchievements)
       .innerJoin(achievements, eq(userAchievements.achievementId, achievements.id))
       .where(eq(userAchievements.userId, userId))
       .orderBy(desc(userAchievements.earnedAt));
+    
+    return results as (UserAchievement & { achievement: Achievement })[];
   }
 
   // Daily activity
@@ -478,7 +515,7 @@ export class DatabaseStorage implements IStorage {
     const currentStreak = await this.getUserStreak(userId);
 
     return {
-      totalTimeMinutes: timeStats.totalTimeMinutes || 0,
+      totalTimeMinutes: Number(timeStats.totalTimeMinutes) || 0,
       totalLessons: lessonStats.totalLessons || 0,
       totalWords: wordStats.totalWords || 0,
       currentStreak,
@@ -487,15 +524,24 @@ export class DatabaseStorage implements IStorage {
 
   // Chat messages
   async getChatMessages(languageId?: string, limit: number = 50): Promise<(ChatMessage & { user: User })[]> {
-    const query = db
-      .select()
+    const results = await db
+      .select({
+        id: chatMessages.id,
+        content: chatMessages.content,
+        userId: chatMessages.userId,
+        languageId: chatMessages.languageId,
+        createdAt: chatMessages.createdAt,
+        translation: chatMessages.translation,
+        isModerated: chatMessages.isModerated,
+        user: users,
+      })
       .from(chatMessages)
       .innerJoin(users, eq(chatMessages.userId, users.id))
       .where(languageId ? eq(chatMessages.languageId, languageId) : undefined)
       .orderBy(desc(chatMessages.createdAt))
       .limit(limit);
 
-    return await query;
+    return results as (ChatMessage & { user: User })[];
   }
 
   async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {

@@ -247,7 +247,7 @@ export default function CommunityChat() {
                         </Badge>
                       )}
                       <span className="text-xs text-slate-500">
-                        {formatTime(msg.createdAt)}
+                        {formatTime(msg.createdAt || new Date())}
                       </span>
                     </div>
                     
