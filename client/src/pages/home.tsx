@@ -24,18 +24,12 @@ export default function Home() {
   ];
 
   const availableLanguages = [
-    { name: "Spanish", flag: "🇪🇸", code: "es" },
-    { name: "French", flag: "🇫🇷", code: "fr" },
-    { name: "German", flag: "🇩🇪", code: "de" },
-    { name: "Italian", flag: "🇮🇹", code: "it" },
-    { name: "Portuguese", flag: "🇵🇹", code: "pt" },
+    { name: "English", flag: "🇺🇸", code: "en" },
+    { name: "Mandarin", flag: "🇨🇳", code: "zh" },
     { name: "Russian", flag: "🇷🇺", code: "ru" },
-    { name: "Chinese", flag: "🇨🇳", code: "zh" },
-    { name: "Japanese", flag: "🇯🇵", code: "ja" },
-    { name: "Korean", flag: "🇰🇷", code: "ko" },
-    { name: "Arabic", flag: "🇸🇦", code: "ar" },
-    { name: "Hindi", flag: "🇮🇳", code: "hi" },
-    { name: "English", flag: "🇺🇸", code: "en" }
+    { name: "Spanish", flag: "🇪🇸", code: "es" },
+    { name: "German", flag: "🇩🇪", code: "de" },
+    { name: "French", flag: "🇫🇷", code: "fr" }
   ];
 
   return (
@@ -44,30 +38,44 @@ export default function Home() {
       <header className="bg-blue-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-8">
+            <div className="flex items-center">
               <Link href="/" className="flex items-center">
-                <Logo size="sm" className="brightness-0 invert" />
+                <Logo size="lg" className="brightness-0 invert" />
               </Link>
-              
+            </div>
+            
+            <div className="flex items-center space-x-8">
               <nav className="hidden md:flex space-x-6">
                 <Link href="/lessons" className="hover:text-blue-200 transition-colors">About</Link>
                 <Link href="/community" className="hover:text-blue-200 transition-colors">Community</Link>
                 <Link href="/stories" className="hover:text-blue-200 transition-colors">Contact</Link>
               </nav>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <select 
-                value={selectedLanguage} 
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="bg-blue-700 text-white border-blue-500 rounded px-2 py-1 text-sm"
-              >
-                {languages.map((lang) => (
-                  <option key={lang.code} value={lang.code}>
-                    {lang.flag} {lang.name}
-                  </option>
-                ))}
-              </select>
+              
+              <div className="flex items-center space-x-4">
+                <select 
+                  value={selectedLanguage} 
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  className="bg-blue-700 text-white border-blue-500 rounded px-2 py-1 text-sm"
+                >
+                  {languages.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.flag} {lang.name}
+                    </option>
+                  ))}
+                </select>
+                
+                <Link href="/dashboard">
+                  <Button variant="outline" className="text-white border-white hover:bg-white hover:text-blue-600">
+                    Log in
+                  </Button>
+                </Link>
+                
+                <Link href="/dashboard">
+                  <Button className="bg-white text-blue-600 hover:bg-blue-50">
+                    Sign up
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -275,13 +283,13 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">All Available Languages</h2>
           <p className="text-center text-gray-600 mb-12">Choose from our complete selection</p>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {availableLanguages.map((language) => (
               <Link key={language.code} href="/dashboard">
-                <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-blue-200">
+                <Card className="p-8 text-center hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-blue-200">
                   <CardContent className="p-0">
-                    <div className="text-4xl mb-3">{language.flag}</div>
-                    <h3 className="font-medium text-gray-800">{language.name}</h3>
+                    <div className="text-5xl mb-4">{language.flag}</div>
+                    <h3 className="font-medium text-gray-800 text-lg">{language.name}</h3>
                   </CardContent>
                 </Card>
               </Link>
