@@ -87,8 +87,81 @@ export default function Home() {
       </header>
 
       {/* Language Selection Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gray-50 relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          {/* Rotating Language Rings */}
+          <div className="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-blue-400 rounded-full animate-spin-slow">
+            <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 text-xs font-bold text-blue-600">EN</div>
+            <div className="absolute top-1/2 -right-2 transform -translate-y-1/2 text-xs font-bold text-blue-600">ES</div>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 text-xs font-bold text-blue-600">FR</div>
+            <div className="absolute top-1/2 -left-2 transform -translate-y-1/2 text-xs font-bold text-blue-600">DE</div>
+          </div>
+          
+          <div className="absolute top-1/3 right-1/4 w-24 h-24 border-2 border-green-400 rounded-full animate-spin-reverse">
+            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 text-xs font-bold text-green-600">中文</div>
+            <div className="absolute top-1/2 -right-1 transform -translate-y-1/2 text-xs font-bold text-green-600">RU</div>
+          </div>
+
+          {/* Floating Text Animations */}
+          <div className="absolute top-1/2 left-0 animate-slide-right">
+            <div className="flex items-center space-x-4 text-lg font-semibold">
+              <span className="text-blue-600">Hello</span>
+              <span className="text-gray-400">→</span>
+              <span className="text-green-600">Hola</span>
+            </div>
+          </div>
+          
+          <div className="absolute top-1/3 right-0 animate-slide-left">
+            <div className="flex items-center space-x-4 text-lg font-semibold">
+              <span className="text-purple-600">Bonjour</span>
+              <span className="text-gray-400">←</span>
+              <span className="text-orange-600">Guten Tag</span>
+            </div>
+          </div>
+
+          <div className="absolute bottom-1/3 left-1/3 animate-slide-right-delayed">
+            <div className="flex items-center space-x-4 text-lg font-semibold">
+              <span className="text-red-600">你好</span>
+              <span className="text-gray-400">→</span>
+              <span className="text-blue-600">Привет</span>
+            </div>
+          </div>
+
+          {/* Flag to Dictionary Transformations */}
+          <div className="absolute top-2/3 left-1/6">
+            <div className="animate-pulse-slow">
+              <div className="text-2xl mb-2 animate-flag-transform">🇪🇸</div>
+              <div className="text-xs bg-white p-1 rounded shadow opacity-80">
+                <div className="font-bold">casa</div>
+                <div className="text-gray-600">house</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-1/4 right-1/6">
+            <div className="animate-pulse-slow-delayed">
+              <div className="text-2xl mb-2 animate-flag-transform">🇫🇷</div>
+              <div className="text-xs bg-white p-1 rounded shadow opacity-80">
+                <div className="font-bold">amour</div>
+                <div className="text-gray-600">love</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Floating Language Particles */}
+          <div className="absolute top-1/4 left-1/2 animate-float">
+            <span className="text-lg">🌍</span>
+          </div>
+          <div className="absolute bottom-1/4 left-1/3 animate-float-delayed">
+            <span className="text-lg">📚</span>
+          </div>
+          <div className="absolute top-1/2 right-1/3 animate-float-slow">
+            <span className="text-lg">💬</span>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Side - Language Selection */}
             <div>
