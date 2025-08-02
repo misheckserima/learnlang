@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, Download, Apple, Smartphone, Facebook, Instagram, Twitter, Linkedin, Send, Check } from "lucide-react";
+import { Play, Download, Apple, Smartphone, Facebook, Instagram, Twitter, Linkedin, Send, Check, Brain, Headphones, Users, Trophy, MessageSquare } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { AuthHeader } from "@/components/auth-header";
 import { useQuery } from "@tanstack/react-query";
@@ -46,6 +46,11 @@ export default function Home() {
             </div>
             
             <div className="flex items-center space-x-8">
+              <nav className="hidden md:flex items-center space-x-6">
+                <a href="#about" className="hover:text-blue-200 transition-colors">About</a>
+                <a href="#how-it-works" className="hover:text-blue-200 transition-colors">How it Works</a>
+                <a href="#contact" className="hover:text-blue-200 transition-colors">Contact</a>
+              </nav>
               <div className="flex items-center space-x-4">
                 <select 
                   value={selectedLanguage} 
@@ -860,6 +865,296 @@ export default function Home() {
               <Send className="w-4 h-4 mr-2" />
               Subscribe
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-900 dark:to-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+              About Learn a Language
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              We're revolutionizing language learning by making it accessible, engaging, and effective for everyone.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Our Mission
+              </h3>
+              <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                We believe that language learning should be fun, interactive, and accessible to everyone. 
+                Our platform combines cutting-edge AI technology with proven language learning methodologies 
+                to create personalized learning experiences that adapt to your pace and style.
+              </p>
+              <div className="grid grid-cols-2 gap-6 mt-8">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">15M+</div>
+                  <div className="text-gray-600 dark:text-gray-300">Active Learners</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600 dark:text-green-400">6</div>
+                  <div className="text-gray-600 dark:text-gray-300">Languages</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">95%</div>
+                  <div className="text-gray-600 dark:text-gray-300">Success Rate</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">24/7</div>
+                  <div className="text-gray-600 dark:text-gray-300">Support</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden shadow-xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop" 
+                  alt="Team collaboration" 
+                  className="w-full h-96 object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 bg-white dark:bg-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+              How It Works
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Start your language learning journey in just 3 simple steps
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Step 1 */}
+            <div className="text-center">
+              <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">1</span>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Choose Your Language</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                Select from 6 popular languages: English, Spanish, French, German, Russian, or Mandarin. 
+                Each course is designed by language experts.
+              </p>
+            </div>
+            
+            {/* Step 2 */}
+            <div className="text-center">
+              <div className="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">2</span>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Personalized Learning</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                Take our placement test and get a customized learning path. Practice vocabulary, 
+                grammar, pronunciation, and conversation skills at your own pace.
+              </p>
+            </div>
+            
+            {/* Step 3 */}
+            <div className="text-center">
+              <div className="w-20 h-20 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">3</span>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Achieve Fluency</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                Track your progress, earn achievements, and connect with native speakers. 
+                Build confidence through real-world practice and cultural immersion.
+              </p>
+            </div>
+          </div>
+          
+          {/* Features Grid */}
+          <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center p-6 rounded-lg bg-gray-50 dark:bg-slate-800">
+              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-bold text-gray-900 dark:text-white mb-2">AI-Powered</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Smart algorithms adapt to your learning style</p>
+            </div>
+            
+            <div className="text-center p-6 rounded-lg bg-gray-50 dark:bg-slate-800">
+              <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Headphones className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-bold text-gray-900 dark:text-white mb-2">Speech Recognition</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Perfect your pronunciation with AI feedback</p>
+            </div>
+            
+            <div className="text-center p-6 rounded-lg bg-gray-50 dark:bg-slate-800">
+              <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-bold text-gray-900 dark:text-white mb-2">Community</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Practice with learners worldwide</p>
+            </div>
+            
+            <div className="text-center p-6 rounded-lg bg-gray-50 dark:bg-slate-800">
+              <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Trophy className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-bold text-gray-900 dark:text-white mb-2">Gamified</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Earn points and achievements as you learn</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-slate-800 dark:to-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+              Get in Touch
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Form */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send us a message</h3>
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+                      placeholder="John"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+                      placeholder="Doe"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+                    placeholder="john@example.com"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:text-white"
+                    placeholder="How can we help?"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Message
+                  </label>
+                  <textarea
+                    rows={6}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:text-white resize-none"
+                    placeholder="Tell us more about your question or how we can help..."
+                  ></textarea>
+                </div>
+                
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                  <Send className="w-5 h-5 mr-2" />
+                  Send Message
+                </Button>
+              </form>
+            </div>
+            
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Contact Information</h3>
+                <div className="space-y-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Send className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">Email</h4>
+                      <p className="text-gray-600 dark:text-gray-300">support@learnalanguage.com</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">We'll respond within 24 hours</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MessageSquare className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">Live Chat</h4>
+                      <p className="text-gray-600 dark:text-gray-300">Available 24/7</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Get instant help with our chatbot</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">Community</h4>
+                      <p className="text-gray-600 dark:text-gray-300">Join our forum</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Connect with other learners</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Frequently Asked Questions</h3>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">How much does it cost?</h4>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">We offer free and premium plans starting at $9.99/month.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Can I switch languages?</h4>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Yes, you can learn multiple languages with one account.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Is there a mobile app?</h4>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Yes, available on iOS and Android app stores.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
