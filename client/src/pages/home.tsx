@@ -35,46 +35,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <AuthHeader />
-      {/* Header */}
-      <header className="bg-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center">
-                <Logo size="lg" className="brightness-0 invert" />
-              </Link>
-            </div>
-            
-            <div className="flex items-center space-x-8">
-              <div className="flex items-center space-x-4">
-                <select 
-                  value={selectedLanguage} 
-                  onChange={(e) => setSelectedLanguage(e.target.value)}
-                  className="bg-blue-700 text-white border-blue-500 rounded px-2 py-1 text-sm"
-                >
-                  {languages.map((lang) => (
-                    <option key={lang.code} value={lang.code}>
-                      {lang.flag} {lang.name}
-                    </option>
-                  ))}
-                </select>
-                
-                <Link href="/not-found">
-                  <Button variant="ghost" className="text-white hover:text-blue-200 hover:bg-transparent">
-                    Log in
-                  </Button>
-                </Link>
-                
-                <Link href="/not-found">
-                  <Button variant="ghost" className="text-white hover:text-blue-200 hover:bg-transparent font-semibold">
-                    Sign up
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+
 
       {/* Language Selection Section */}
       <section className="py-20 bg-gray-50 relative overflow-hidden">
