@@ -58,7 +58,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.session.userId = user.id;
       
       // Remove sensitive data before sending response
-      const { ...userResponse } = user;
+      const { passwordHash, ...userResponse } = user;
       res.status(201).json({ user: userResponse, message: "Account created successfully" });
     } catch (error) {
       console.error("Error creating user:", error);
@@ -68,27 +68,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const { email, username } = req.body;
+      const { email, password } = req.body;
       
-      if (!email && !username) {
-        return res.status(400).json({ message: "Email or username is required" });
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
       }
       
-      let user;
-      if (email) {
-        user = await storage.getUserByEmail(email);
-      } else {
-        user = await storage.getUserByUsername(username);
-      }
+      const user = await storage.validatePassword(email, password);
       
       if (!user) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).json({ message: "Invalid email or password" });
       }
       
       req.session.userId = user.id;
       
       // Remove sensitive data before sending response
-      const { ...userResponse } = user;
+      const { passwordHash, ...userResponse } = user;
       res.json({ user: userResponse, message: "Login successful" });
     } catch (error) {
       console.error("Error during login:", error);
@@ -119,7 +114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Remove sensitive data before sending response
-      const { ...userResponse } = user;
+      const { passwordHash, ...userResponse } = user;
       res.json({ user: userResponse });
     } catch (error) {
       console.error("Error fetching current user:", error);

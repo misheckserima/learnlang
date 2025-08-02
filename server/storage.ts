@@ -17,6 +17,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, asc, sql } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 export interface IStorage {
   // User methods
@@ -24,6 +25,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(insertUser: InsertUser): Promise<User>;
+  validatePassword(email: string, password: string): Promise<User | null>;
 
   // Language methods
   getLanguages(): Promise<Language[]>;
@@ -58,11 +60,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
+    const { password, ...userData } = insertUser;
+    
+    if (!password) {
+      throw new Error("Password is required");
+    }
+    
+    const passwordHash = await bcrypt.hash(password, 10);
+    
     const [user] = await db
       .insert(users)
-      .values(insertUser)
+      .values({ ...userData, passwordHash })
       .returning();
     return user;
+  }
+
+  async validatePassword(email: string, password: string): Promise<User | null> {
+    const user = await this.getUserByEmail(email);
+    if (!user) return null;
+    
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    return isValid ? user : null;
   }
 
   // Language methods
