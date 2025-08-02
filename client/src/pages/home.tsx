@@ -123,17 +123,23 @@ export default function Home() {
               </h1>
               
               <div className="grid grid-cols-2 gap-3 max-w-sm">
-                {availableLanguages.map((lang) => (
-                  <Link key={lang.code} href="/not-found">
-                    <div className="flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:bg-white hover:shadow-md transition-all cursor-pointer">
-                      <div className="text-2xl">
-                        {lang.flagEmoji}
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-900 text-sm">{lang.name}</div>
-                      </div>
+                {languages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => setSelectedLanguage(lang.code)}
+                    className={`flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:bg-white hover:shadow-md transition-all cursor-pointer ${
+                      selectedLanguage === lang.code
+                        ? 'border-orange-500 bg-orange-50'
+                        : 'hover:border-orange-300'
+                    }`}
+                  >
+                    <div className="text-2xl">
+                      {lang.flag}
                     </div>
-                  </Link>
+                    <div>
+                      <div className="font-medium text-gray-900 text-sm">{lang.name}</div>
+                    </div>
+                  </button>
                 ))}
               </div>
             </div>

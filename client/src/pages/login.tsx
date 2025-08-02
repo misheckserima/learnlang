@@ -12,7 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
 const loginSchema = z.object({
-  emailOrUsername: z.string().min(1, "Email or username is required"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -25,20 +26,16 @@ export default function Login() {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      emailOrUsername: "",
+      email: "",
+      password: "",
     },
   });
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginFormData) => {
-      const isEmail = data.emailOrUsername.includes("@");
-      const payload = isEmail 
-        ? { email: data.emailOrUsername }
-        : { username: data.emailOrUsername };
-      
       return apiRequest("/api/auth/login", {
         method: "POST",
-        body: JSON.stringify(payload),
+        body: JSON.stringify(data),
       });
     },
     onSuccess: (data) => {
@@ -76,13 +73,33 @@ export default function Login() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="emailOrUsername"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email or Username</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter your email or username"
+                        type="email"
+                        placeholder="Enter your email"
+                        {...field}
+                        disabled={loginMutation.isPending}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter your password"
                         {...field}
                         disabled={loginMutation.isPending}
                       />

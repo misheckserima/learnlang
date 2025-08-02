@@ -18,6 +18,7 @@ const signupSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   firstName: z.string().min(1, "First name is required").max(100, "First name must be less than 100 characters"),
   lastName: z.string().min(1, "Last name is required").max(100, "Last name must be less than 100 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
@@ -34,6 +35,7 @@ export default function Signup() {
       email: "",
       firstName: "",
       lastName: "",
+      password: "",
     },
   });
 
@@ -143,6 +145,25 @@ export default function Signup() {
                       <Input
                         type="email"
                         placeholder="john@example.com"
+                        {...field}
+                        disabled={signupMutation.isPending}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter a secure password"
                         {...field}
                         disabled={signupMutation.isPending}
                       />
