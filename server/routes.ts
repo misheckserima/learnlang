@@ -7,9 +7,125 @@ import {
   insertVocabularyWordSchema,
   insertGrammarExerciseSchema,
 } from "@shared/schema";
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import { pool } from "./db";
+
+declare module 'express-session' {
+  interface SessionData {
+    userId: string;
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
+
+  // Session configuration
+  const PgSession = connectPgSimple(session);
+  app.use(session({
+    store: new PgSession({
+      pool: pool,
+      tableName: 'session'
+    }),
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Set to true in production with HTTPS
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
+
+  // Authentication routes
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const userData = insertUserSchema.parse(req.body);
+      
+      // Check if user already exists
+      const existingUserByEmail = await storage.getUserByEmail(userData.email);
+      const existingUserByUsername = await storage.getUserByUsername(userData.username);
+      
+      if (existingUserByEmail) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+      
+      if (existingUserByUsername) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+      
+      const user = await storage.createUser(userData);
+      req.session.userId = user.id;
+      
+      // Remove sensitive data before sending response
+      const { ...userResponse } = user;
+      res.status(201).json({ user: userResponse, message: "Account created successfully" });
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(400).json({ message: "Invalid user data" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, username } = req.body;
+      
+      if (!email && !username) {
+        return res.status(400).json({ message: "Email or username is required" });
+      }
+      
+      let user;
+      if (email) {
+        user = await storage.getUserByEmail(email);
+      } else {
+        user = await storage.getUserByUsername(username);
+      }
+      
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      req.session.userId = user.id;
+      
+      // Remove sensitive data before sending response
+      const { ...userResponse } = user;
+      res.json({ user: userResponse, message: "Login successful" });
+    } catch (error) {
+      console.error("Error during login:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Error destroying session:", err);
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: "Logout successful" });
+    });
+  });
+
+  app.get("/api/auth/me", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Remove sensitive data before sending response
+      const { ...userResponse } = user;
+      res.json({ user: userResponse });
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+      res.status(500).json({ message: "Failed to fetch user data" });
+    }
+  });
 
   // User routes
   app.get("/api/users/:id", async (req, res) => {

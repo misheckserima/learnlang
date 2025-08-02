@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, Download, Apple, Smartphone, Facebook, Instagram, Twitter, Linkedin, Send, Check } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { AuthHeader } from "@/components/auth-header";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
@@ -33,6 +34,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      <AuthHeader />
       {/* Header */}
       <header className="bg-blue-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -21,6 +21,8 @@ import { eq, and, desc, asc, sql } from "drizzle-orm";
 export interface IStorage {
   // User methods
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
   createUser(insertUser: InsertUser): Promise<User>;
 
   // Language methods
@@ -42,6 +44,16 @@ export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
     return user || undefined;
   }
 
@@ -72,16 +84,17 @@ export class DatabaseStorage implements IStorage {
 
   // Vocabulary methods
   async getVocabularyWords(languageId: string, difficulty?: string): Promise<VocabularyWord[]> {
-    let query = db
-      .select()
-      .from(vocabularyWords)
-      .where(eq(vocabularyWords.languageId, languageId));
-
+    const conditions = [eq(vocabularyWords.languageId, languageId)];
+    
     if (difficulty) {
-      query = query.where(eq(vocabularyWords.difficulty, difficulty));
+      conditions.push(eq(vocabularyWords.difficulty, difficulty));
     }
 
-    return await query.orderBy(asc(vocabularyWords.word));
+    return await db
+      .select()
+      .from(vocabularyWords)
+      .where(and(...conditions))
+      .orderBy(asc(vocabularyWords.word));
   }
 
   async getRandomVocabularyWords(languageId: string, count: number): Promise<VocabularyWord[]> {
@@ -103,16 +116,17 @@ export class DatabaseStorage implements IStorage {
 
   // Grammar methods
   async getGrammarExercises(languageId: string, difficulty?: string): Promise<GrammarExercise[]> {
-    let query = db
-      .select()
-      .from(grammarExercises)
-      .where(eq(grammarExercises.languageId, languageId));
-
+    const conditions = [eq(grammarExercises.languageId, languageId)];
+    
     if (difficulty) {
-      query = query.where(eq(grammarExercises.difficulty, difficulty));
+      conditions.push(eq(grammarExercises.difficulty, difficulty));
     }
 
-    return await query.orderBy(asc(grammarExercises.grammarTopic));
+    return await db
+      .select()
+      .from(grammarExercises)
+      .where(and(...conditions))
+      .orderBy(asc(grammarExercises.grammarTopic));
   }
 
   async getRandomGrammarExercises(languageId: string, count: number): Promise<GrammarExercise[]> {
