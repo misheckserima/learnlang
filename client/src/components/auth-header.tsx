@@ -30,7 +30,18 @@ export function AuthHeader() {
           </div>
         </Link>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-6">
+            <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
+              About
+            </Link>
+            <Link href="/how-it-works" className="text-sm font-medium hover:text-primary transition-colors">
+              How it Works
+            </Link>
+            <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors">
+              Contact
+            </Link>
+          </nav>
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
