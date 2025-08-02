@@ -23,9 +23,14 @@ export const users = pgTable("users", {
   firstName: varchar("first_name", { length: 100 }),
   lastName: varchar("last_name", { length: 100 }),
   profileImageUrl: text("profile_image_url"),
+  location: varchar("location", { length: 100 }),
+  interests: text("interests").array(),
+  fieldOfLearning: varchar("field_of_learning", { length: 100 }),
   currentStreak: integer("current_streak").default(0),
   totalPoints: integer("total_points").default(0),
   dailyGoalMinutes: integer("daily_goal_minutes").default(20),
+  cefr_level: varchar("cefr_level", { length: 5 }).default("A1"), // A1, A2, B1, B2, C1, C2
+  profileCompleted: boolean("profile_completed").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -107,15 +112,64 @@ export const userAchievements = pgTable("user_achievements", {
   earnedAt: timestamp("earned_at").defaultNow(),
 });
 
+// Learning paths for personalized learning
+export const learningPaths = pgTable("learning_paths", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  languageId: uuid("language_id").notNull().references(() => languages.id, { onDelete: "cascade" }),
+  currentLevel: varchar("current_level", { length: 5 }).default("A1"),
+  targetLevel: varchar("target_level", { length: 5 }).default("B2"),
+  adaptiveDifficulty: decimal("adaptive_difficulty", { precision: 3, scale: 2 }).default("0.5"),
+  weeklyGoalHours: integer("weekly_goal_hours").default(5),
+  studyDays: integer("study_days").array().default(sql`ARRAY[1,2,3,4,5]`), // 1=Monday, 7=Sunday
+  reminderTime: varchar("reminder_time", { length: 8 }).default("19:00:00"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Study sessions tracking
+export const studySessions = pgTable("study_sessions", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  languageId: uuid("language_id").notNull().references(() => languages.id, { onDelete: "cascade" }),
+  sessionType: varchar("session_type", { length: 50 }).notNull(), // vocabulary, grammar, pronunciation, etc
+  durationMinutes: integer("duration_minutes").notNull(),
+  correctAnswers: integer("correct_answers").default(0),
+  totalQuestions: integer("total_questions").default(0),
+  difficultyLevel: varchar("difficulty_level", { length: 20 }),
+  startedAt: timestamp("started_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+// Progress benchmarks
+export const progressBenchmarks = pgTable("progress_benchmarks", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  languageId: uuid("language_id").notNull().references(() => languages.id, { onDelete: "cascade" }),
+  cefrLevel: varchar("cefr_level", { length: 5 }).notNull(),
+  skillType: varchar("skill_type", { length: 20 }).notNull(), // listening, reading, writing, speaking
+  currentScore: decimal("current_score", { precision: 5, scale: 2 }).default("0"),
+  maxScore: decimal("max_score", { precision: 5, scale: 2 }).default("100"),
+  lastAssessment: timestamp("last_assessment"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   userVocabularyProgress: many(userVocabularyProgress),
   userAchievements: many(userAchievements),
+  learningPaths: many(learningPaths),
+  studySessions: many(studySessions),
+  progressBenchmarks: many(progressBenchmarks),
 }));
 
 export const languagesRelations = relations(languages, ({ many }) => ({
   vocabularyWords: many(vocabularyWords),
   grammarExercises: many(grammarExercises),
+  learningPaths: many(learningPaths),
+  studySessions: many(studySessions),
+  progressBenchmarks: many(progressBenchmarks),
 }));
 
 export const vocabularyWordsRelations = relations(vocabularyWords, ({ one, many }) => ({
@@ -139,6 +193,21 @@ export const achievementsRelations = relations(achievements, ({ many }) => ({
 export const userAchievementsRelations = relations(userAchievements, ({ one }) => ({
   user: one(users, { fields: [userAchievements.userId], references: [users.id] }),
   achievement: one(achievements, { fields: [userAchievements.achievementId], references: [achievements.id] }),
+}));
+
+export const learningPathsRelations = relations(learningPaths, ({ one }) => ({
+  user: one(users, { fields: [learningPaths.userId], references: [users.id] }),
+  language: one(languages, { fields: [learningPaths.languageId], references: [languages.id] }),
+}));
+
+export const studySessionsRelations = relations(studySessions, ({ one }) => ({
+  user: one(users, { fields: [studySessions.userId], references: [users.id] }),
+  language: one(languages, { fields: [studySessions.languageId], references: [languages.id] }),
+}));
+
+export const progressBenchmarksRelations = relations(progressBenchmarks, ({ one }) => ({
+  user: one(users, { fields: [progressBenchmarks.userId], references: [users.id] }),
+  language: one(languages, { fields: [progressBenchmarks.languageId], references: [languages.id] }),
 }));
 
 // Insert schemas
@@ -166,6 +235,34 @@ export const insertGrammarExerciseSchema = createInsertSchema(grammarExercises).
   createdAt: true,
 });
 
+export const insertLearningPathSchema = createInsertSchema(learningPaths).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertStudySessionSchema = createInsertSchema(studySessions).omit({
+  id: true,
+  startedAt: true,
+});
+
+export const insertProgressBenchmarkSchema = createInsertSchema(progressBenchmarks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateUserProfileSchema = createInsertSchema(users).omit({
+  id: true,
+  passwordHash: true,
+  createdAt: true,
+  email: true,
+  username: true,
+}).extend({
+  interests: z.array(z.string()).optional(),
+  studyDays: z.array(z.number()).optional(),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -178,6 +275,15 @@ export type InsertVocabularyWord = z.infer<typeof insertVocabularyWordSchema>;
 
 export type GrammarExercise = typeof grammarExercises.$inferSelect;
 export type InsertGrammarExercise = z.infer<typeof insertGrammarExerciseSchema>;
+
+export type LearningPath = typeof learningPaths.$inferSelect;
+export type InsertLearningPath = z.infer<typeof insertLearningPathSchema>;
+
+export type StudySession = typeof studySessions.$inferSelect;
+export type InsertStudySession = z.infer<typeof insertStudySessionSchema>;
+
+export type ProgressBenchmark = typeof progressBenchmarks.$inferSelect;
+export type InsertProgressBenchmark = z.infer<typeof insertProgressBenchmarkSchema>;
 
 export type UserVocabularyProgress = typeof userVocabularyProgress.$inferSelect;
 export type Achievement = typeof achievements.$inferSelect;

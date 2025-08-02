@@ -6,6 +6,10 @@ import {
   insertLanguageSchema,
   insertVocabularyWordSchema,
   insertGrammarExerciseSchema,
+  insertLearningPathSchema,
+  insertStudySessionSchema,
+  insertProgressBenchmarkSchema,
+  updateUserProfileSchema,
 } from "@shared/schema";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
@@ -240,6 +244,141 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating grammar exercise:", error);
       res.status(400).json({ message: "Invalid grammar exercise data" });
+    }
+  });
+
+  // Profile routes
+  app.put("/api/profile", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const profileData = updateUserProfileSchema.parse(req.body);
+      const user = await storage.updateUserProfile(req.session.userId, profileData);
+      
+      // Remove sensitive data before sending response
+      const { passwordHash, ...userResponse } = user;
+      res.json({ user: userResponse, message: "Profile updated successfully" });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(400).json({ message: "Invalid profile data" });
+    }
+  });
+
+  // Learning Path routes
+  app.get("/api/learning-paths/:languageId", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const path = await storage.getUserLearningPath(req.session.userId, req.params.languageId);
+      res.json(path);
+    } catch (error) {
+      console.error("Error fetching learning path:", error);
+      res.status(500).json({ message: "Failed to fetch learning path" });
+    }
+  });
+
+  app.post("/api/learning-paths", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const pathData = insertLearningPathSchema.parse({
+        ...req.body,
+        userId: req.session.userId,
+      });
+      const path = await storage.createLearningPath(pathData);
+      res.status(201).json(path);
+    } catch (error) {
+      console.error("Error creating learning path:", error);
+      res.status(400).json({ message: "Invalid learning path data" });
+    }
+  });
+
+  app.put("/api/learning-paths/:pathId", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const updateData = req.body;
+      const path = await storage.updateLearningPath(req.params.pathId, updateData);
+      res.json(path);
+    } catch (error) {
+      console.error("Error updating learning path:", error);
+      res.status(400).json({ message: "Invalid learning path data" });
+    }
+  });
+
+  // Study Session routes
+  app.post("/api/study-sessions", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const sessionData = insertStudySessionSchema.parse({
+        ...req.body,
+        userId: req.session.userId,
+      });
+      const session = await storage.createStudySession(sessionData);
+      res.status(201).json(session);
+    } catch (error) {
+      console.error("Error creating study session:", error);
+      res.status(400).json({ message: "Invalid study session data" });
+    }
+  });
+
+  app.get("/api/study-sessions", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const limit = parseInt(req.query.limit as string) || 10;
+      const sessions = await storage.getUserStudySessions(req.session.userId, limit);
+      res.json(sessions);
+    } catch (error) {
+      console.error("Error fetching study sessions:", error);
+      res.status(500).json({ message: "Failed to fetch study sessions" });
+    }
+  });
+
+  // Progress Benchmark routes
+  app.get("/api/progress-benchmarks", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const languageId = req.query.languageId as string;
+      const benchmarks = await storage.getUserProgressBenchmarks(req.session.userId, languageId);
+      res.json(benchmarks);
+    } catch (error) {
+      console.error("Error fetching progress benchmarks:", error);
+      res.status(500).json({ message: "Failed to fetch progress benchmarks" });
+    }
+  });
+
+  app.post("/api/progress-benchmarks", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const benchmarkData = insertProgressBenchmarkSchema.parse({
+        ...req.body,
+        userId: req.session.userId,
+      });
+      const benchmark = await storage.createProgressBenchmark(benchmarkData);
+      res.status(201).json(benchmark);
+    } catch (error) {
+      console.error("Error creating progress benchmark:", error);
+      res.status(400).json({ message: "Invalid progress benchmark data" });
     }
   });
 
