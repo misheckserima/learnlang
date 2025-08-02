@@ -92,7 +92,7 @@ export default function ProfileSetup() {
         title: "Profile Setup Complete!",
         description: "Your learning journey is ready to begin.",
       });
-      setLocation("/");
+      setLocation("/dashboard");
     },
     onError: () => {
       toast({

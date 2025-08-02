@@ -15,6 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import { Upload, X, User, Settings, BarChart3, Trophy, Edit2, Save, Clock, Target, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import Navigation from "@/components/navigation";
 
 const updateProfileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -60,6 +61,8 @@ export default function Profile() {
   const { data: userResponse, isLoading } = useQuery({
     queryKey: ["/api/auth/me"],
     queryFn: () => apiRequest("/api/auth/me"),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   const user = userResponse?.user;
@@ -69,6 +72,7 @@ export default function Profile() {
     queryKey: ["/api/study-sessions"],
     queryFn: () => apiRequest("/api/study-sessions?limit=10"),
     enabled: !!user,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   // Fetch progress benchmarks
@@ -76,6 +80,7 @@ export default function Profile() {
     queryKey: ["/api/progress-benchmarks"],
     queryFn: () => apiRequest("/api/progress-benchmarks"),
     enabled: !!user,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   const {
@@ -202,8 +207,9 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Navigation />
+      <div className="max-w-4xl mx-auto p-4">
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview" className="flex items-center gap-2">

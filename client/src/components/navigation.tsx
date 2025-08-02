@@ -1,125 +1,117 @@
-import { useState } from "react";
 import { Link, useLocation } from "wouter";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Flame, Menu, X } from "lucide-react";
-import { Logo } from "@/components/ui/logo";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { User, Settings, LogOut, Home, Brain } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Navigation() {
-  const [location] = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  // Mock user data - in real app this would come from auth context
-  const user = {
-    name: "Sarah",
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=100&h=100&fit=crop&crop=face",
-    currentStreak: 7
-  };
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const isActive = (path: string) => location === path;
+  // Fetch current user data
+  const { data: userResponse } = useQuery({
+    queryKey: ["/api/auth/me"],
+    queryFn: () => apiRequest("/api/auth/me"),
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
-  const navLinks = [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/lessons", label: "Lessons" },
-    { href: "/community", label: "Community" },
-    { href: "/stories", label: "Stories" },
-  ];
+  const user = userResponse?.user;
+
+  const logoutMutation = useMutation({
+    mutationFn: () => apiRequest("/api/auth/logout", { method: "POST" }),
+    onSuccess: () => {
+      queryClient.clear();
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+      setLocation("/");
+    },
+  });
+
+  if (!user) {
+    return null; // Don't show navigation if user is not logged in
+  }
 
   return (
-    <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="bg-white dark:bg-gray-800 shadow-sm border-b">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-4">
-            <Link href="/" className="flex items-center">
-              <Logo size="sm" />
+          {/* Logo and Brand */}
+          <Link href="/dashboard">
+            <div className="flex items-center gap-3 cursor-pointer">
+              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Learn a Language
+              </span>
+            </div>
+          </Link>
+
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center space-x-6">
+            <Link href="/dashboard">
+              <Button variant="ghost" className="flex items-center gap-2">
+                <Home className="w-4 h-4" />
+                Dashboard
+              </Button>
             </Link>
           </div>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href}>
-                <Button
-                  variant={isActive(link.href) ? "default" : "ghost"}
-                  className={`${
-                    isActive(link.href) 
-                      ? "bg-emerald-500 text-white hover:bg-emerald-600" 
-                      : "text-slate-600 hover:text-emerald-600"
-                  }`}
-                >
-                  {link.label}
-                </Button>
-              </Link>
-            ))}
-          </div>
 
-          {/* User Profile & Streak */}
-          <div className="flex items-center space-x-4">
-            <div className="hidden sm:flex items-center space-x-3">
-              <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center space-x-1">
-                <Flame className="w-3 h-3" />
-                <span>{user.currentStreak}</span>
-              </Badge>
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-            </div>
-
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200 py-4">
-            <div className="flex flex-col space-y-2">
-              {navLinks.map((link) => (
-                <Link key={link.href} href={link.href}>
-                  <Button
-                    variant={isActive(link.href) ? "default" : "ghost"}
-                    className={`w-full justify-start ${
-                      isActive(link.href) 
-                        ? "bg-emerald-500 text-white" 
-                        : "text-slate-600"
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Button>
-                </Link>
-              ))}
-              
-              {/* Mobile user info */}
-              <div className="flex items-center space-x-3 pt-4 border-t border-slate-200">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.profileImageUrl} alt={user.firstName} />
+                  <AvatarFallback>
+                    {user.firstName?.[0]}{user.lastName?.[0]}
+                  </AvatarFallback>
                 </Avatar>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-slate-600">{user.name}</span>
-                  <Badge variant="secondary" className="bg-amber-100 text-amber-700 flex items-center space-x-1">
-                    <Flame className="w-3 h-3" />
-                    <span>{user.currentStreak}</span>
-                  </Badge>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end" forceMount>
+              <div className="flex items-center justify-start gap-2 p-2">
+                <div className="flex flex-col space-y-1 leading-none">
+                  <p className="font-medium">{user.firstName} {user.lastName}</p>
+                  <p className="w-[200px] truncate text-sm text-muted-foreground">
+                    {user.email}
+                  </p>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setLocation("/profile")}>
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLocation("/profile")}>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => logoutMutation.mutate()}
+                disabled={logoutMutation.isPending}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>{logoutMutation.isPending ? "Logging out..." : "Log out"}</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </nav>
   );
