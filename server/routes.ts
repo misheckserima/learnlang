@@ -29,17 +29,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(session({
     store: new PgSession({
       pool: pool,
-      tableName: 'session'
+      tableName: 'session',
+      createTableIfMissing: true
     }),
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    secret: process.env.SESSION_SECRET || 'learn-a-language-secret-key-2025',
     resave: false,
     saveUninitialized: false,
+    rolling: true, // Reset expiry on activity
     cookie: {
       secure: false, // Set to true in production with HTTPS
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: 'lax'
     }
   }));
+
+  // Middleware to extend session on each request
+  app.use((req, res, next) => {
+    if (req.session && req.session.userId) {
+      req.session.touch();
+    }
+    next();
+  });
 
   // Authentication routes
   app.post("/api/auth/signup", async (req, res) => {
