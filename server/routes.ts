@@ -40,7 +40,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       secure: false, // Set to true in production with HTTPS
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      sameSite: 'lax'
+      sameSite: 'lax',
+      path: '/',
+      domain: undefined // Let the browser set the domain
     }
   }));
 

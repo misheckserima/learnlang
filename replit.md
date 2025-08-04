@@ -6,6 +6,8 @@ The platform features a custom logo with a globe icon inside speech bubbles, rep
 
 ## Recent Updates (August 2025)
 - **Migration Complete**: Successfully migrated from Replit Agent to Replit environment with PostgreSQL database
+- **Authentication Fixed**: Resolved session persistence issues with enhanced cookie configuration and rolling sessions
+- **Database Setup**: Created session table, added 6 supported languages, and fixed user authentication credentials
 - **Enhanced Profile System**: Added comprehensive profile setup with image upload (1MB limit), location, interests, field of learning
 - **Personalized Learning Features**: Implemented AI-powered adaptive learning paths with CEFR level tracking (A1-C2)
 - **Progress Tracking**: Added study sessions tracking, progress benchmarks, and intelligent goal setting
