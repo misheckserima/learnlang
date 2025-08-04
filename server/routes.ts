@@ -38,11 +38,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     rolling: true, // Reset expiry on activity
     cookie: {
       secure: false, // Set to true in production with HTTPS
-      httpOnly: true,
+      httpOnly: true, // Keep secure from XSS
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      sameSite: 'lax',
-      path: '/',
-      domain: undefined // Let the browser set the domain
+      sameSite: 'lax', // Standard setting for same-origin
+      path: '/'
     }
   }));
 

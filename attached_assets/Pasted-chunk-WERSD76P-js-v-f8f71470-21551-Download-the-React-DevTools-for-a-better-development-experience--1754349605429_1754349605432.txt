@@ -1,0 +1,92 @@
+chunk-WERSD76P.js?v=f8f71470:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+queryClient.ts:20  GET https://0cc57951-8d6f-4fbe-ac67-1cd8993cd2e6-00-u0vlwyw8vto3.riker.replit.dev/api/auth/me 401 (Unauthorized)
+apiRequest @ queryClient.ts:20
+queryFn @ App.tsx:26
+fetchFn @ @tanstack_react-query.js?v=f8f71470:840
+run @ @tanstack_react-query.js?v=f8f71470:494
+start @ @tanstack_react-query.js?v=f8f71470:536
+fetch @ @tanstack_react-query.js?v=f8f71470:926
+executeFetch_fn @ @tanstack_react-query.js?v=f8f71470:2211
+onSubscribe @ @tanstack_react-query.js?v=f8f71470:1898
+subscribe @ @tanstack_react-query.js?v=f8f71470:24
+(anonymous) @ @tanstack_react-query.js?v=f8f71470:3022
+subscribeToStore @ chunk-WERSD76P.js?v=f8f71470:11984
+commitHookEffectListMount @ chunk-WERSD76P.js?v=f8f71470:16915
+commitPassiveMountOnFiber @ chunk-WERSD76P.js?v=f8f71470:18156
+commitPassiveMountEffects_complete @ chunk-WERSD76P.js?v=f8f71470:18129
+commitPassiveMountEffects_begin @ chunk-WERSD76P.js?v=f8f71470:18119
+commitPassiveMountEffects @ chunk-WERSD76P.js?v=f8f71470:18109
+flushPassiveEffectsImpl @ chunk-WERSD76P.js?v=f8f71470:19490
+flushPassiveEffects @ chunk-WERSD76P.js?v=f8f71470:19447
+performSyncWorkOnRoot @ chunk-WERSD76P.js?v=f8f71470:18868
+flushSyncCallbacks @ chunk-WERSD76P.js?v=f8f71470:9119
+commitRootImpl @ chunk-WERSD76P.js?v=f8f71470:19432
+commitRoot @ chunk-WERSD76P.js?v=f8f71470:19277
+finishConcurrentRender @ chunk-WERSD76P.js?v=f8f71470:18805
+performConcurrentWorkOnRoot @ chunk-WERSD76P.js?v=f8f71470:18718
+workLoop @ chunk-WERSD76P.js?v=f8f71470:197
+flushWork @ chunk-WERSD76P.js?v=f8f71470:176
+performWorkUntilDeadline @ chunk-WERSD76P.js?v=f8f71470:384
+queryClient.ts:20  GET https://0cc57951-8d6f-4fbe-ac67-1cd8993cd2e6-00-u0vlwyw8vto3.riker.replit.dev/api/auth/me 401 (Unauthorized)
+apiRequest @ queryClient.ts:20
+queryFn @ auth-context.tsx:40
+fetchFn @ @tanstack_react-query.js?v=f8f71470:840
+run @ @tanstack_react-query.js?v=f8f71470:494
+(anonymous) @ @tanstack_react-query.js?v=f8f71470:519
+Promise.then
+(anonymous) @ @tanstack_react-query.js?v=f8f71470:515
+Promise.catch
+run @ @tanstack_react-query.js?v=f8f71470:498
+start @ @tanstack_react-query.js?v=f8f71470:536
+fetch @ @tanstack_react-query.js?v=f8f71470:926
+executeFetch_fn @ @tanstack_react-query.js?v=f8f71470:2211
+onSubscribe @ @tanstack_react-query.js?v=f8f71470:1898
+subscribe @ @tanstack_react-query.js?v=f8f71470:24
+(anonymous) @ @tanstack_react-query.js?v=f8f71470:3022
+subscribeToStore @ chunk-WERSD76P.js?v=f8f71470:11984
+commitHookEffectListMount @ chunk-WERSD76P.js?v=f8f71470:16915
+commitPassiveMountOnFiber @ chunk-WERSD76P.js?v=f8f71470:18156
+commitPassiveMountEffects_complete @ chunk-WERSD76P.js?v=f8f71470:18129
+commitPassiveMountEffects_begin @ chunk-WERSD76P.js?v=f8f71470:18119
+commitPassiveMountEffects @ chunk-WERSD76P.js?v=f8f71470:18109
+flushPassiveEffectsImpl @ chunk-WERSD76P.js?v=f8f71470:19490
+flushPassiveEffects @ chunk-WERSD76P.js?v=f8f71470:19447
+performSyncWorkOnRoot @ chunk-WERSD76P.js?v=f8f71470:18868
+flushSyncCallbacks @ chunk-WERSD76P.js?v=f8f71470:9119
+commitRootImpl @ chunk-WERSD76P.js?v=f8f71470:19432
+commitRoot @ chunk-WERSD76P.js?v=f8f71470:19277
+finishConcurrentRender @ chunk-WERSD76P.js?v=f8f71470:18805
+performConcurrentWorkOnRoot @ chunk-WERSD76P.js?v=f8f71470:18718
+workLoop @ chunk-WERSD76P.js?v=f8f71470:197
+flushWork @ chunk-WERSD76P.js?v=f8f71470:176
+performWorkUntilDeadline @ chunk-WERSD76P.js?v=f8f71470:384
+Z5GF3UW7.js:12  POST https://api-js.mixpanel.com/engage/?verbose=1&ip=1&_=1754349559908 net::ERR_BLOCKED_BY_CLIENT
+N._send_request @ Z5GF3UW7.js:12
+(anonymous) @ Z5GF3UW7.js:12
+rt.flush @ Z5GF3UW7.js:12
+(anonymous) @ Z5GF3UW7.js:12
+setTimeout
+rt.scheduleFlush @ Z5GF3UW7.js:12
+rt.resetFlush @ Z5GF3UW7.js:12
+rt.flush @ Z5GF3UW7.js:12
+rt.start @ Z5GF3UW7.js:12
+(anonymous) @ Z5GF3UW7.js:12
+d.each @ Z5GF3UW7.js:6
+N.start_batch_senders @ Z5GF3UW7.js:12
+N.init_batchers @ Z5GF3UW7.js:12
+N._init @ Z5GF3UW7.js:12
+uo @ Z5GF3UW7.js:12
+Gl.Be.init @ Z5GF3UW7.js:12
+Jl @ Z5GF3UW7.js:12
+(anonymous) @ 6ES5OXJ3.js:1
+(anonymous) @ HMFACHAW.js:1
+eo @ GM3QQEJJ.js:8
+Tn @ GM3QQEJJ.js:8
+xc @ GM3QQEJJ.js:8
+Nt @ GM3QQEJJ.js:6
+ty @ GM3QQEJJ.js:8
+Ot @ GM3QQEJJ.js:8
+pd @ GM3QQEJJ.js:8
+Eo @ GM3QQEJJ.js:1
+_o @ GM3QQEJJ.js:1
+queryClient.ts:20  PUT https://0cc57951-8d6f-4fbe-ac67-1cd8993cd2e6-00-u0vlwyw8vto3.riker.replit.dev/api/profile 401 (Unauthorized)
