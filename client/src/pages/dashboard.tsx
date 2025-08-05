@@ -28,7 +28,9 @@ import {
   Languages,
   MapPin,
   Zap,
-  Calendar
+  Calendar,
+  User,
+  BarChart3
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import Navigation from "@/components/navigation";
@@ -108,10 +110,10 @@ const FEATURE_CATEGORIES = [
 ];
 
 const QUICK_ACTIONS = [
-  { name: "Start Lesson", icon: Play, action: "lesson", color: "bg-blue-500" },
-  { name: "Practice Speaking", icon: Mic, action: "speaking", color: "bg-green-500" },
-  { name: "Play Games", icon: Gamepad2, action: "games", color: "bg-purple-500" },
-  { name: "Join Community", icon: Users, action: "community", color: "bg-pink-500" }
+  { name: "Learning Path", icon: BookOpen, action: "learning-pathway", color: "bg-blue-500", href: "/learning-pathway" },
+  { name: "Online Friends", icon: Users, action: "online-friends", color: "bg-green-500", href: "/online-friends" },
+  { name: "Practice Speaking", icon: Mic, action: "speaking", color: "bg-purple-500" },
+  { name: "View Profile", icon: User, action: "profile", color: "bg-pink-500", href: "/profile" }
 ];
 
 export default function Dashboard() {
@@ -142,9 +144,12 @@ export default function Dashboard() {
 
   const user = userResponse?.user;
 
-  const handleQuickAction = (action: string) => {
-    // Implement navigation or action based on the selected action
-    console.log(`Starting ${action}`);
+  const handleQuickAction = (action: string, href?: string) => {
+    if (href) {
+      window.location.href = href;
+    } else {
+      console.log(`Starting ${action}`);
+    }
   };
 
   const calculateWeeklyProgress = () => {
@@ -239,9 +244,10 @@ export default function Dashboard() {
               {QUICK_ACTIONS.map((action) => (
                 <Button
                   key={action.action}
-                  onClick={() => handleQuickAction(action.action)}
+                  onClick={() => handleQuickAction(action.action, action.href)}
                   variant="outline"
                   className="h-20 flex-col gap-2 hover:shadow-md transition-all"
+                  data-testid={`quick-action-${action.action}`}
                 >
                   <div className={`p-2 rounded-full ${action.color} text-white`}>
                     <action.icon className="w-5 h-5" />

@@ -155,6 +155,47 @@ export const progressBenchmarks = pgTable("progress_benchmarks", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Learning pathway stages
+export const learningStages = pgTable("learning_stages", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  learningPathId: uuid("learning_path_id").notNull().references(() => learningPaths.id, { onDelete: "cascade" }),
+  stageNumber: integer("stage_number").notNull(),
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description"),
+  difficulty: varchar("difficulty", { length: 20 }).default("beginner"),
+  vocabularyData: jsonb("vocabulary_data"), // Array of vocabulary objects
+  grammarTopics: jsonb("grammar_topics"), // Array of grammar topic objects
+  culturalNotes: text("cultural_notes").array(),
+  completionCriteria: jsonb("completion_criteria"), // Object with mastery requirements
+  isUnlocked: boolean("is_unlocked").default(false),
+  isCompleted: boolean("is_completed").default(false),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User friends/connections
+export const userConnections = pgTable("user_connections", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  friendId: uuid("friend_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  status: varchar("status", { length: 20 }).default("pending"), // pending, accepted, blocked
+  isOnline: boolean("is_online").default(false),
+  lastSeen: timestamp("last_seen").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Video call sessions
+export const videoCallSessions = pgTable("video_call_sessions", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  initiatorId: uuid("initiator_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  receiverId: uuid("receiver_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  sessionId: varchar("session_id", { length: 100 }).notNull(),
+  status: varchar("status", { length: 20 }).default("pending"), // pending, active, ended, declined
+  startedAt: timestamp("started_at"),
+  endedAt: timestamp("ended_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   userVocabularyProgress: many(userVocabularyProgress),
@@ -162,6 +203,10 @@ export const usersRelations = relations(users, ({ many }) => ({
   learningPaths: many(learningPaths),
   studySessions: many(studySessions),
   progressBenchmarks: many(progressBenchmarks),
+  connections: many(userConnections, { relationName: "user_connections" }),
+  friendConnections: many(userConnections, { relationName: "friend_connections" }),
+  initiatedCalls: many(videoCallSessions, { relationName: "initiated_calls" }),
+  receivedCalls: many(videoCallSessions, { relationName: "received_calls" }),
 }));
 
 export const languagesRelations = relations(languages, ({ many }) => ({
@@ -195,9 +240,10 @@ export const userAchievementsRelations = relations(userAchievements, ({ one }) =
   achievement: one(achievements, { fields: [userAchievements.achievementId], references: [achievements.id] }),
 }));
 
-export const learningPathsRelations = relations(learningPaths, ({ one }) => ({
+export const learningPathsRelations = relations(learningPaths, ({ one, many }) => ({
   user: one(users, { fields: [learningPaths.userId], references: [users.id] }),
   language: one(languages, { fields: [learningPaths.languageId], references: [languages.id] }),
+  stages: many(learningStages),
 }));
 
 export const studySessionsRelations = relations(studySessions, ({ one }) => ({
@@ -208,6 +254,20 @@ export const studySessionsRelations = relations(studySessions, ({ one }) => ({
 export const progressBenchmarksRelations = relations(progressBenchmarks, ({ one }) => ({
   user: one(users, { fields: [progressBenchmarks.userId], references: [users.id] }),
   language: one(languages, { fields: [progressBenchmarks.languageId], references: [languages.id] }),
+}));
+
+export const learningStagesRelations = relations(learningStages, ({ one }) => ({
+  learningPath: one(learningPaths, { fields: [learningStages.learningPathId], references: [learningPaths.id] }),
+}));
+
+export const userConnectionsRelations = relations(userConnections, ({ one }) => ({
+  user: one(users, { fields: [userConnections.userId], references: [users.id] }),
+  friend: one(users, { fields: [userConnections.friendId], references: [users.id] }),
+}));
+
+export const videoCallSessionsRelations = relations(videoCallSessions, ({ one }) => ({
+  initiator: one(users, { fields: [videoCallSessions.initiatorId], references: [users.id] }),
+  receiver: one(users, { fields: [videoCallSessions.receiverId], references: [users.id] }),
 }));
 
 // Insert schemas
@@ -263,6 +323,21 @@ export const updateUserProfileSchema = createInsertSchema(users).omit({
   studyDays: z.array(z.number()).optional(),
 });
 
+export const insertLearningStageSchema = createInsertSchema(learningStages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserConnectionSchema = createInsertSchema(userConnections).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertVideoCallSessionSchema = createInsertSchema(videoCallSessions).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -288,3 +363,12 @@ export type InsertProgressBenchmark = z.infer<typeof insertProgressBenchmarkSche
 export type UserVocabularyProgress = typeof userVocabularyProgress.$inferSelect;
 export type Achievement = typeof achievements.$inferSelect;
 export type UserAchievement = typeof userAchievements.$inferSelect;
+
+export type LearningStage = typeof learningStages.$inferSelect;
+export type InsertLearningStage = z.infer<typeof insertLearningStageSchema>;
+
+export type UserConnection = typeof userConnections.$inferSelect;
+export type InsertUserConnection = z.infer<typeof insertUserConnectionSchema>;
+
+export type VideoCallSession = typeof videoCallSessions.$inferSelect;
+export type InsertVideoCallSession = z.infer<typeof insertVideoCallSessionSchema>;

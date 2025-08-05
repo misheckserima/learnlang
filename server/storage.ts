@@ -9,6 +9,9 @@ import {
   learningPaths,
   studySessions,
   progressBenchmarks,
+  learningStages,
+  userConnections,
+  videoCallSessions,
   type User, 
   type InsertUser,
   type Language,
@@ -23,6 +26,12 @@ import {
   type InsertStudySession,
   type ProgressBenchmark,
   type InsertProgressBenchmark,
+  type LearningStage,
+  type InsertLearningStage,
+  type UserConnection,
+  type InsertUserConnection,
+  type VideoCallSession,
+  type InsertVideoCallSession,
   updateUserProfileSchema,
 } from "@shared/schema";
 import { db } from "./db";
@@ -65,6 +74,24 @@ export interface IStorage {
   getUserProgressBenchmarks(userId: string, languageId?: string): Promise<ProgressBenchmark[]>;
   createProgressBenchmark(insertBenchmark: InsertProgressBenchmark): Promise<ProgressBenchmark>;
   updateProgressBenchmark(benchmarkId: string, updateData: Partial<InsertProgressBenchmark>): Promise<ProgressBenchmark>;
+
+  // Learning Stage methods
+  getLearningStages(learningPathId: string): Promise<LearningStage[]>;
+  createLearningStage(insertStage: InsertLearningStage): Promise<LearningStage>;
+  updateLearningStage(stageId: string, updateData: Partial<InsertLearningStage>): Promise<LearningStage>;
+  unlockNextStage(learningPathId: string, currentStageNumber: number): Promise<void>;
+
+  // User Connection methods
+  getUserConnections(userId: string): Promise<UserConnection[]>;
+  getOnlineFriends(userId: string): Promise<UserConnection[]>;
+  createConnection(insertConnection: InsertUserConnection): Promise<UserConnection>;
+  updateConnectionStatus(connectionId: string, status: string): Promise<UserConnection>;
+  updateUserOnlineStatus(userId: string, isOnline: boolean): Promise<void>;
+
+  // Video Call methods
+  createVideoCallSession(insertCall: InsertVideoCallSession): Promise<VideoCallSession>;
+  updateVideoCallStatus(callId: string, status: string): Promise<VideoCallSession>;
+  getActiveCallsForUser(userId: string): Promise<VideoCallSession[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -286,6 +313,136 @@ export class DatabaseStorage implements IStorage {
       .where(eq(progressBenchmarks.id, benchmarkId))
       .returning();
     return benchmark;
+  }
+
+  // Learning Stage methods
+  async getLearningStages(learningPathId: string): Promise<LearningStage[]> {
+    return await db
+      .select()
+      .from(learningStages)
+      .where(eq(learningStages.learningPathId, learningPathId))
+      .orderBy(asc(learningStages.stageNumber));
+  }
+
+  async createLearningStage(insertStage: InsertLearningStage): Promise<LearningStage> {
+    const [stage] = await db
+      .insert(learningStages)
+      .values(insertStage)
+      .returning();
+    return stage;
+  }
+
+  async updateLearningStage(stageId: string, updateData: Partial<InsertLearningStage>): Promise<LearningStage> {
+    const [stage] = await db
+      .update(learningStages)
+      .set(updateData)
+      .where(eq(learningStages.id, stageId))
+      .returning();
+    return stage;
+  }
+
+  async unlockNextStage(learningPathId: string, currentStageNumber: number): Promise<void> {
+    await db
+      .update(learningStages)
+      .set({ isUnlocked: true })
+      .where(
+        and(
+          eq(learningStages.learningPathId, learningPathId),
+          eq(learningStages.stageNumber, currentStageNumber + 1)
+        )
+      );
+  }
+
+  // User Connection methods
+  async getUserConnections(userId: string): Promise<UserConnection[]> {
+    return await db
+      .select()
+      .from(userConnections)
+      .where(
+        and(
+          eq(userConnections.userId, userId),
+          eq(userConnections.status, "accepted")
+        )
+      )
+      .orderBy(desc(userConnections.lastSeen));
+  }
+
+  async getOnlineFriends(userId: string): Promise<UserConnection[]> {
+    return await db
+      .select()
+      .from(userConnections)
+      .where(
+        and(
+          eq(userConnections.userId, userId),
+          eq(userConnections.status, "accepted"),
+          eq(userConnections.isOnline, true)
+        )
+      )
+      .orderBy(desc(userConnections.lastSeen));
+  }
+
+  async createConnection(insertConnection: InsertUserConnection): Promise<UserConnection> {
+    const [connection] = await db
+      .insert(userConnections)
+      .values(insertConnection)
+      .returning();
+    return connection;
+  }
+
+  async updateConnectionStatus(connectionId: string, status: string): Promise<UserConnection> {
+    const [connection] = await db
+      .update(userConnections)
+      .set({ status })
+      .where(eq(userConnections.id, connectionId))
+      .returning();
+    return connection;
+  }
+
+  async updateUserOnlineStatus(userId: string, isOnline: boolean): Promise<void> {
+    await db
+      .update(userConnections)
+      .set({ 
+        isOnline,
+        lastSeen: new Date()
+      })
+      .where(
+        eq(userConnections.friendId, userId)
+      );
+  }
+
+  // Video Call methods
+  async createVideoCallSession(insertCall: InsertVideoCallSession): Promise<VideoCallSession> {
+    const [call] = await db
+      .insert(videoCallSessions)
+      .values(insertCall)
+      .returning();
+    return call;
+  }
+
+  async updateVideoCallStatus(callId: string, status: string): Promise<VideoCallSession> {
+    const [call] = await db
+      .update(videoCallSessions)
+      .set({ 
+        status,
+        ...(status === "active" && { startedAt: new Date() }),
+        ...(status === "ended" && { endedAt: new Date() })
+      })
+      .where(eq(videoCallSessions.id, callId))
+      .returning();
+    return call;
+  }
+
+  async getActiveCallsForUser(userId: string): Promise<VideoCallSession[]> {
+    return await db
+      .select()
+      .from(videoCallSessions)
+      .where(
+        and(
+          sql`(${videoCallSessions.initiatorId} = ${userId} OR ${videoCallSessions.receiverId} = ${userId})`,
+          sql`${videoCallSessions.status} IN ('pending', 'active')`
+        )
+      )
+      .orderBy(desc(videoCallSessions.createdAt));
   }
 }
 

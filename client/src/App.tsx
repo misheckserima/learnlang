@@ -14,6 +14,8 @@ import Dashboard from "@/pages/dashboard";
 import Profile from "@/pages/profile";
 import ProfileSetup from "@/pages/profile-setup";
 import NotFound from "@/pages/not-found";
+import LearningPathway from "@/pages/LearningPathway";
+import OnlineFriends from "@/pages/OnlineFriends";
 import { useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -77,6 +79,8 @@ function Router() {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/profile" component={Profile} />
         <Route path="/profile-setup" component={ProfileSetup} />
+        <Route path="/learning-pathway" component={LearningPathway} />
+        <Route path="/online-friends" component={OnlineFriends} />
         <Route path="/not-found" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

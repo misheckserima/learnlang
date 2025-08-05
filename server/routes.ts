@@ -9,8 +9,12 @@ import {
   insertLearningPathSchema,
   insertStudySessionSchema,
   insertProgressBenchmarkSchema,
+  insertLearningStageSchema,
+  insertUserConnectionSchema,
+  insertVideoCallSessionSchema,
   updateUserProfileSchema,
 } from "@shared/schema";
+import { generateLearningPathway, generateVocabularySet } from "./gemini";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
@@ -391,6 +395,253 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating progress benchmark:", error);
       res.status(400).json({ message: "Invalid progress benchmark data" });
+    }
+  });
+
+  // Learning Stage routes
+  app.get("/api/learning-paths/:pathId/stages", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const stages = await storage.getLearningStages(req.params.pathId);
+      res.json(stages);
+    } catch (error) {
+      console.error("Error fetching learning stages:", error);
+      res.status(500).json({ message: "Failed to fetch learning stages" });
+    }
+  });
+
+  app.post("/api/learning-paths/:pathId/generate", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const learningPath = await storage.getUserLearningPath(req.session.userId, req.body.languageId);
+      if (!learningPath) {
+        return res.status(404).json({ message: "Learning path not found" });
+      }
+
+      // Get language information
+      const language = await storage.getLanguages();
+      const targetLanguage = language.find(l => l.id === req.body.languageId);
+      if (!targetLanguage) {
+        return res.status(404).json({ message: "Language not found" });
+      }
+
+      // Generate AI learning pathway
+      const aiStages = await generateLearningPathway(
+        targetLanguage.name,
+        "English", // Default native language
+        user.cefr_level || "A1",
+        user.interests || [],
+        user.fieldOfLearning
+      );
+
+      // Save stages to database
+      const savedStages = [];
+      for (let i = 0; i < aiStages.length; i++) {
+        const stage = aiStages[i];
+        const stageData = {
+          learningPathId: learningPath.id,
+          stageNumber: i + 1,
+          title: stage.title,
+          description: stage.description,
+          difficulty: stage.difficulty,
+          vocabularyData: stage.vocabularyWords,
+          grammarTopics: stage.grammarTopics,
+          culturalNotes: stage.culturalNotes,
+          completionCriteria: stage.completionCriteria,
+          isUnlocked: i === 0, // First stage is unlocked
+          isCompleted: false
+        };
+        
+        const savedStage = await storage.createLearningStage(stageData);
+        savedStages.push(savedStage);
+      }
+
+      res.json({ stages: savedStages, message: "Learning pathway generated successfully" });
+    } catch (error) {
+      console.error("Error generating learning pathway:", error);
+      res.status(500).json({ message: "Failed to generate learning pathway" });
+    }
+  });
+
+  app.put("/api/learning-stages/:stageId/complete", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const stage = await storage.updateLearningStage(req.params.stageId, {
+        isCompleted: true,
+        completedAt: new Date()
+      });
+
+      // Unlock next stage
+      await storage.unlockNextStage(stage.learningPathId, stage.stageNumber);
+
+      res.json({ stage, message: "Stage completed successfully" });
+    } catch (error) {
+      console.error("Error completing stage:", error);
+      res.status(500).json({ message: "Failed to complete stage" });
+    }
+  });
+
+  // Friends/Connections routes
+  app.get("/api/friends", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const connections = await storage.getUserConnections(req.session.userId);
+      res.json(connections);
+    } catch (error) {
+      console.error("Error fetching friends:", error);
+      res.status(500).json({ message: "Failed to fetch friends" });
+    }
+  });
+
+  app.get("/api/friends/online", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const onlineFriends = await storage.getOnlineFriends(req.session.userId);
+      res.json(onlineFriends);
+    } catch (error) {
+      console.error("Error fetching online friends:", error);
+      res.status(500).json({ message: "Failed to fetch online friends" });
+    }
+  });
+
+  app.post("/api/friends/connect", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const connectionData = insertUserConnectionSchema.parse({
+        userId: req.session.userId,
+        friendId: req.body.friendId,
+        status: "pending"
+      });
+
+      const connection = await storage.createConnection(connectionData);
+      res.status(201).json(connection);
+    } catch (error) {
+      console.error("Error creating connection:", error);
+      res.status(400).json({ message: "Invalid connection data" });
+    }
+  });
+
+  app.put("/api/friends/:connectionId/status", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const connection = await storage.updateConnectionStatus(
+        req.params.connectionId,
+        req.body.status
+      );
+      res.json(connection);
+    } catch (error) {
+      console.error("Error updating connection status:", error);
+      res.status(400).json({ message: "Failed to update connection status" });
+    }
+  });
+
+  // Video Call routes
+  app.post("/api/video-calls", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const callData = insertVideoCallSessionSchema.parse({
+        initiatorId: req.session.userId,
+        receiverId: req.body.receiverId,
+        sessionId: req.body.sessionId || `call_${Date.now()}`,
+        status: "pending"
+      });
+
+      const call = await storage.createVideoCallSession(callData);
+      res.status(201).json(call);
+    } catch (error) {
+      console.error("Error creating video call:", error);
+      res.status(400).json({ message: "Invalid video call data" });
+    }
+  });
+
+  app.put("/api/video-calls/:callId/status", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const call = await storage.updateVideoCallStatus(
+        req.params.callId,
+        req.body.status
+      );
+      res.json(call);
+    } catch (error) {
+      console.error("Error updating video call status:", error);
+      res.status(400).json({ message: "Failed to update video call status" });
+    }
+  });
+
+  app.get("/api/video-calls/active", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const activeCalls = await storage.getActiveCallsForUser(req.session.userId);
+      res.json(activeCalls);
+    } catch (error) {
+      console.error("Error fetching active calls:", error);
+      res.status(500).json({ message: "Failed to fetch active calls" });
+    }
+  });
+
+  // AI Content Generation routes
+  app.post("/api/ai/vocabulary", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { language, topic, difficulty, count } = req.body;
+      const vocabulary = await generateVocabularySet(language, topic, difficulty, count);
+      res.json(vocabulary);
+    } catch (error) {
+      console.error("Error generating vocabulary:", error);
+      res.status(500).json({ message: "Failed to generate vocabulary" });
+    }
+  });
+
+  // Update user online status
+  app.put("/api/users/online-status", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      await storage.updateUserOnlineStatus(req.session.userId, req.body.isOnline);
+      res.json({ message: "Online status updated" });
+    } catch (error) {
+      console.error("Error updating online status:", error);
+      res.status(500).json({ message: "Failed to update online status" });
     }
   });
 
