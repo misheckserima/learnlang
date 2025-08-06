@@ -290,7 +290,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const path = await storage.getUserLearningPath(req.session.userId, req.params.languageId);
-      res.json(path);
+      if (!path) {
+        return res.json(null);
+      }
+      
+      // Calculate progress statistics
+      const stages = await storage.getLearningStages(path.id);
+      const completedStages = stages.filter(stage => stage.isCompleted).length;
+      const progressPercentage = stages.length > 0 ? (completedStages / stages.length) * 100 : 0;
+      
+      res.json({
+        ...path,
+        completedStages,
+        totalStages: stages.length,
+        progressPercentage
+      });
     } catch (error) {
       console.error("Error fetching learning path:", error);
       res.status(500).json({ message: "Failed to fetch learning path" });
@@ -357,7 +371,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const limit = parseInt(req.query.limit as string) || 10;
       const sessions = await storage.getUserStudySessions(req.session.userId, limit);
-      res.json(sessions);
+      res.json(sessions || []);
     } catch (error) {
       console.error("Error fetching study sessions:", error);
       res.status(500).json({ message: "Failed to fetch study sessions" });
@@ -406,7 +420,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const stages = await storage.getLearningStages(req.params.pathId);
-      res.json(stages);
+      res.json(stages || []);
     } catch (error) {
       console.error("Error fetching learning stages:", error);
       res.status(500).json({ message: "Failed to fetch learning stages" });

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,149 +8,140 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   BookOpen, 
   Brain, 
-  Volume2, 
-  Gamepad2, 
-  Users, 
-  Trophy, 
+  Play, 
   Target, 
+  Sparkles,
   Globe,
-  Headphones,
-  MessageCircle,
-  Book,
-  PuzzleIcon,
-  Award,
   TrendingUp,
-  Clock,
   Flame,
   Star,
-  Play,
-  Mic,
-  Languages,
-  MapPin,
+  Clock,
+  ChevronRight,
   Zap,
-  Calendar,
-  User,
-  BarChart3
+  Users,
+  Mic,
+  Award,
+  Languages
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import Navigation from "@/components/navigation";
+import { useToast } from "@/hooks/use-toast";
 
-const FEATURE_CATEGORIES = [
-  {
-    id: "pronunciation",
-    title: "Pronunciation & Listening Tools",
-    icon: Volume2,
-    color: "bg-blue-50 dark:bg-blue-900/20 border-blue-200",
-    features: [
-      { name: "AI Speech Recognition", desc: "Get instant pronunciation feedback and accuracy scoring" },
-      { name: "Native Speaker Audio", desc: "Listen to native speakers with slow-play options" },
-      { name: "Voice Comparison", desc: "Real-time voice analysis and accent improvement tools" }
-    ]
-  },
-  {
-    id: "exercises",
-    title: "Interactive Exercises",
-    icon: PuzzleIcon,
-    color: "bg-green-50 dark:bg-green-900/20 border-green-200",
-    features: [
-      { name: "Vocabulary Drills", desc: "Visual flashcards and memory-building exercises" },
-      { name: "Grammar Quizzes", desc: "Sentence-building challenges and grammar practice" },
-      { name: "Listening Comprehension", desc: "Fill-in-the-gap and audio comprehension activities" },
-      { name: "AI Tutor Support", desc: "Instant grammar corrections and explanations" }
-    ]
-  },
-  {
-    id: "gamification",
-    title: "Gamified Learning",
-    icon: Gamepad2,
-    color: "bg-purple-50 dark:bg-purple-900/20 border-purple-200",
-    features: [
-      { name: "Language Games", desc: "Memory match, word puzzles, and spelling challenges" },
-      { name: "Daily Challenges", desc: "Build streaks and maintain learning momentum" },
-      { name: "Leaderboards", desc: "Compete with friends and community members" },
-      { name: "Rewards System", desc: "Earn badges and track your achievements" }
-    ]
-  },
-  {
-    id: "cultural",
-    title: "Cultural Immersion & Stories",
-    icon: Globe,
-    color: "bg-orange-50 dark:bg-orange-900/20 border-orange-200",
-    features: [
-      { name: "Interactive Stories", desc: "Real-life dialogues adapted to your skill level" },
-      { name: "Regional Expressions", desc: "Learn idioms and local expressions" },
-      { name: "News & Literature", desc: "Practice with articles, fables, and novels" },
-      { name: "Cultural Capsules", desc: "Explore customs, cuisine, and traditions" }
-    ]
-  },
-  {
-    id: "dictionary",
-    title: "Dictionary & Grammar Hub",
-    icon: Book,
-    color: "bg-teal-50 dark:bg-teal-900/20 border-teal-200",
-    features: [
-      { name: "Multilingual Dictionary", desc: "Pronunciation, synonyms, and usage examples" },
-      { name: "Grammar Explanations", desc: "Interactive examples and explanations" },
-      { name: "Verb Conjugation", desc: "Complete conjugation tables and tense trainer" },
-      { name: "Visual Mind Maps", desc: "Sentence structure and syntax visualization" }
-    ]
-  },
-  {
-    id: "community",
-    title: "Community & Collaboration",
-    icon: Users,
-    color: "bg-pink-50 dark:bg-pink-900/20 border-pink-200",
-    features: [
-      { name: "Language Exchange", desc: "Peer-to-peer practice rooms" },
-      { name: "AI Chatbot", desc: "24/7 conversation practice with AI assistant" },
-      { name: "Speaking Rooms", desc: "Weekly group sessions with native speakers" },
-      { name: "Community Forums", desc: "Grammar help, motivation, and discussions" }
-    ]
-  }
-];
+interface LearningPath {
+  id: string;
+  languageId: string;
+  currentLevel: string;
+  targetLevel: string;
+  completedStages: number;
+  totalStages: number;
+  progressPercentage: number;
+}
 
-const QUICK_ACTIONS = [
-  { name: "Learning Path", icon: BookOpen, action: "learning-pathway", color: "bg-blue-500", href: "/learning-pathway" },
-  { name: "Online Friends", icon: Users, action: "online-friends", color: "bg-green-500", href: "/online-friends" },
-  { name: "Practice Speaking", icon: Mic, action: "speaking", color: "bg-purple-500" },
-  { name: "View Profile", icon: User, action: "profile", color: "bg-pink-500", href: "/profile" }
-];
+interface Language {
+  id: string;
+  code: string;
+  name: string;
+  nativeName: string;
+  flagEmoji: string;
+}
+
+interface LearningStage {
+  id: string;
+  stageNumber: number;
+  title: string;
+  description: string;
+  difficulty: string;
+  isUnlocked: boolean;
+  isCompleted: boolean;
+  vocabularyData?: any[];
+  grammarTopics?: any[];
+  culturalNotes?: string[];
+}
 
 export default function Dashboard() {
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [selectedLanguage, setSelectedLanguage] = useState<Language | null>(null);
 
   // Fetch user data
   const { data: userResponse } = useQuery({
     queryKey: ["/api/auth/me"],
-    queryFn: () => apiRequest("/api/auth/me"),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 
   // Fetch languages
   const { data: languages } = useQuery({
     queryKey: ["/api/languages"],
-    queryFn: () => apiRequest("/api/languages"),
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000,
+  });
+
+  // Fetch learning path for selected language
+  const { data: learningPath, isLoading: pathLoading } = useQuery({
+    queryKey: ["/api/learning-paths", selectedLanguage?.id],
+    enabled: !!selectedLanguage?.id,
+  });
+
+  // Fetch learning stages
+  const { data: stages, isLoading: stagesLoading } = useQuery({
+    queryKey: ["/api/learning-paths", learningPath?.id, "stages"],
+    enabled: !!learningPath?.id,
   });
 
   // Fetch study sessions
   const { data: studySessions } = useQuery({
     queryKey: ["/api/study-sessions"],
-    queryFn: () => apiRequest("/api/study-sessions?limit=5"),
     enabled: !!userResponse?.user,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 2 * 60 * 1000,
   });
 
   const user = userResponse?.user;
 
-  const handleQuickAction = (action: string, href?: string) => {
-    if (href) {
-      window.location.href = href;
-    } else {
-      console.log(`Starting ${action}`);
+  // Create learning path mutation
+  const createPathMutation = useMutation({
+    mutationFn: (data: { languageId: string }) => 
+      apiRequest("/api/learning-paths", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/learning-paths"] });
+      toast({
+        title: "Learning Path Created!",
+        description: "Your personalized language learning journey has been set up.",
+      });
+    },
+  });
+
+  // Generate pathway content mutation
+  const generatePathwayMutation = useMutation({
+    mutationFn: (data: { languageId: string }) => 
+      apiRequest(`/api/learning-paths/${learningPath?.id}/generate`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/learning-paths"] });
+      toast({
+        title: "AI Content Generated!",
+        description: "Your learning stages are now ready with personalized content.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Generation Failed",
+        description: error.message || "Failed to generate learning content",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Set default language
+  useEffect(() => {
+    if (languages && languages.length > 0 && !selectedLanguage) {
+      setSelectedLanguage(languages[0]);
     }
-  };
+  }, [languages, selectedLanguage]);
 
   const calculateWeeklyProgress = () => {
     if (!studySessions || studySessions.length === 0) return 0;
@@ -159,10 +150,32 @@ export default function Dashboard() {
     return Math.min(100, (totalMinutes / (dailyGoal * 7)) * 100);
   };
 
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty?.toLowerCase()) {
+      case "beginner": return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+      case "intermediate": return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+      case "advanced": return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+      default: return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+    }
+  };
+
+  const handleStartLearning = () => {
+    if (!selectedLanguage) return;
+    
+    if (!learningPath) {
+      createPathMutation.mutate({ languageId: selectedLanguage.id });
+    } else if (!stages || stages.length === 0) {
+      generatePathwayMutation.mutate({ languageId: selectedLanguage.id });
+    } else {
+      // Navigate to learning pathway
+      window.location.href = "/learning-pathway";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Navigation />
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
+      <div className="max-w-6xl mx-auto p-6 space-y-8">
         
         {/* Welcome Header */}
         <div className="text-center space-y-4">
@@ -171,60 +184,195 @@ export default function Dashboard() {
               <Brain className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Language Learning Dashboard
+              Learn a Language
             </h1>
           </div>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Welcome back, {user?.firstName}! Ready to continue your language learning journey?
+            Welcome back, {user?.firstName}! Ready to continue your personalized learning journey?
           </p>
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* Language Selection */}
+        <Card className="border-2 border-blue-200 dark:border-blue-800">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <Languages className="w-6 h-6" />
+              Choose Your Learning Language
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {languages?.map((language: Language) => (
+                <Button
+                  key={language.id}
+                  variant={selectedLanguage?.id === language.id ? "default" : "outline"}
+                  onClick={() => setSelectedLanguage(language)}
+                  className="h-20 flex-col gap-2 transition-all hover:scale-105"
+                >
+                  <span className="text-3xl">{language.flagEmoji}</span>
+                  <div className="text-center">
+                    <div className="font-medium">{language.name}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{language.nativeName}</div>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Main Learning Path Section */}
+        {selectedLanguage && (
+          <Card className="border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <Sparkles className="w-8 h-8 text-yellow-500" />
+                Your {selectedLanguage.name} Learning Journey
+              </CardTitle>
+              <CardDescription className="text-lg">
+                AI-powered personalized learning path designed just for you
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              
+              {/* Learning Path Progress */}
+              {learningPath && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <Badge variant="outline" className="text-sm px-3 py-1">
+                        Level: {learningPath.currentLevel} → {learningPath.targetLevel}
+                      </Badge>
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        {learningPath.completedStages || 0}/{learningPath.totalStages || 0} stages completed
+                      </span>
+                    </div>
+                    <span className="text-2xl font-bold text-purple-600">
+                      {Math.round(learningPath.progressPercentage || 0)}%
+                    </span>
+                  </div>
+                  <Progress value={learningPath.progressPercentage || 0} className="h-4" />
+                </div>
+              )}
+
+              {/* Learning Content Preview */}
+              {stages && stages.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {stages.slice(0, 3).map((stage: LearningStage, index: number) => (
+                    <Card 
+                      key={stage.id}
+                      className={`transition-all hover:shadow-md ${
+                        stage.isCompleted ? "border-green-200 bg-green-50 dark:bg-green-900/20" : 
+                        stage.isUnlocked ? "border-blue-200 bg-blue-50 dark:bg-blue-900/20" : 
+                        "border-gray-200 bg-gray-50 dark:bg-gray-800 opacity-60"
+                      }`}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                            stage.isCompleted ? "bg-green-500 text-white" :
+                            stage.isUnlocked ? "bg-blue-500 text-white" :
+                            "bg-gray-400 text-white"
+                          }`}>
+                            {stage.stageNumber}
+                          </div>
+                          <Badge className={getDifficultyColor(stage.difficulty)} variant="secondary">
+                            {stage.difficulty}
+                          </Badge>
+                        </div>
+                        <h3 className="font-semibold mb-1">{stage.title}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{stage.description}</p>
+                        <div className="flex items-center justify-between mt-3 text-xs">
+                          <span>{stage.vocabularyData?.length || 0} words</span>
+                          <span>{stage.grammarTopics?.length || 0} topics</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {/* Main Action Button */}
+              <div className="text-center">
+                <Button 
+                  onClick={handleStartLearning}
+                  disabled={createPathMutation.isPending || generatePathwayMutation.isPending || pathLoading || stagesLoading}
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold"
+                >
+                  {createPathMutation.isPending || generatePathwayMutation.isPending ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Setting Up Your Journey...
+                    </>
+                  ) : !learningPath ? (
+                    <>
+                      <Play className="w-5 h-5 mr-2" />
+                      Start Learning {selectedLanguage.name}
+                    </>
+                  ) : !stages || stages.length === 0 ? (
+                    <>
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Generate AI Learning Path
+                    </>
+                  ) : (
+                    <>
+                      <BookOpen className="w-5 h-5 mr-2" />
+                      Continue Learning
+                    </>
+                  )}
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="border-l-4 border-l-blue-500">
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Current Level</p>
-                  <p className="text-2xl font-bold text-blue-600">{user?.cefr_level || "A1"}</p>
+                  <p className="text-xl font-bold text-blue-600">{user?.cefr_level || "A1"}</p>
                 </div>
-                <Target className="w-8 h-8 text-blue-500" />
+                <Target className="w-6 h-6 text-blue-500" />
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-green-500">
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Current Streak</p>
-                  <p className="text-2xl font-bold text-green-600">{user?.currentStreak || 0} days</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Streak</p>
+                  <p className="text-xl font-bold text-green-600">{user?.currentStreak || 0} days</p>
                 </div>
-                <Flame className="w-8 h-8 text-green-500" />
+                <Flame className="w-6 h-6 text-green-500" />
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-purple-500">
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Points</p>
-                  <p className="text-2xl font-bold text-purple-600">{user?.totalPoints || 0}</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Points</p>
+                  <p className="text-xl font-bold text-purple-600">{user?.totalPoints || 0}</p>
                 </div>
-                <Star className="w-8 h-8 text-purple-500" />
+                <Star className="w-6 h-6 text-purple-500" />
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-l-4 border-l-orange-500">
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Weekly Goal</p>
-                  <p className="text-2xl font-bold text-orange-600">{Math.round(calculateWeeklyProgress())}%</p>
+                  <p className="text-xl font-bold text-orange-600">{Math.round(calculateWeeklyProgress())}%</p>
                 </div>
-                <TrendingUp className="w-8 h-8 text-orange-500" />
+                <TrendingUp className="w-6 h-6 text-orange-500" />
               </div>
             </CardContent>
           </Card>
@@ -235,171 +383,84 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Zap className="w-5 h-5" />
-              Quick Start
+              Quick Practice
             </CardTitle>
-            <CardDescription>Jump into your favorite learning activities</CardDescription>
+            <CardDescription>Jump into quick learning activities</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {QUICK_ACTIONS.map((action) => (
-                <Button
-                  key={action.action}
-                  onClick={() => handleQuickAction(action.action, action.href)}
-                  variant="outline"
-                  className="h-20 flex-col gap-2 hover:shadow-md transition-all"
-                  data-testid={`quick-action-${action.action}`}
-                >
-                  <div className={`p-2 rounded-full ${action.color} text-white`}>
-                    <action.icon className="w-5 h-5" />
-                  </div>
-                  <span className="text-sm font-medium">{action.name}</span>
-                </Button>
-              ))}
+              <Button
+                variant="outline"
+                className="h-16 flex-col gap-2 hover:shadow-md transition-all"
+                onClick={() => window.location.href = "/learning-pathway"}
+              >
+                <BookOpen className="w-5 h-5 text-blue-500" />
+                <span className="text-sm font-medium">Learning Path</span>
+              </Button>
+              
+              <Button
+                variant="outline"
+                className="h-16 flex-col gap-2 hover:shadow-md transition-all"
+                onClick={() => window.location.href = "/online-friends"}
+              >
+                <Users className="w-5 h-5 text-green-500" />
+                <span className="text-sm font-medium">Practice Partners</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                className="h-16 flex-col gap-2 hover:shadow-md transition-all"
+              >
+                <Mic className="w-5 h-5 text-purple-500" />
+                <span className="text-sm font-medium">Pronunciation</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                className="h-16 flex-col gap-2 hover:shadow-md transition-all"
+                onClick={() => window.location.href = "/profile"}
+              >
+                <Award className="w-5 h-5 text-pink-500" />
+                <span className="text-sm font-medium">Achievements</span>
+              </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Weekly Progress */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Weekly Progress
-            </CardTitle>
-            <CardDescription>Your learning activity this week</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">Daily Goal: {user?.dailyGoalMinutes || 20} minutes</span>
-                <span className="text-sm text-gray-500">{Math.round(calculateWeeklyProgress())}% complete</span>
-              </div>
-              <Progress value={calculateWeeklyProgress()} className="h-3" />
-              {studySessions && studySessions.length > 0 && (
-                <div className="text-sm text-gray-600 dark:text-gray-300">
-                  Recent sessions: {studySessions.length} completed
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Key Features */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Brain className="w-6 h-6" />
-              Key Features
-            </CardTitle>
-            <CardDescription>Explore all the powerful tools available for your language learning journey</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="pronunciation" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
-                {FEATURE_CATEGORIES.map((category) => (
-                  <TabsTrigger 
-                    key={category.id} 
-                    value={category.id}
-                    className="flex items-center gap-1 text-xs"
-                  >
-                    <category.icon className="w-4 h-4" />
-                    <span className="hidden sm:inline">{category.title.split(' ')[0]}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-
-              {FEATURE_CATEGORIES.map((category) => (
-                <TabsContent key={category.id} value={category.id}>
-                  <Card className={category.color}>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-3">
-                        <category.icon className="w-6 h-6" />
-                        {category.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {category.features.map((feature, index) => (
-                          <div key={index} className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                            <h4 className="font-semibold mb-2">{feature.name}</h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">{feature.desc}</p>
-                            <Button size="sm" variant="outline" className="mt-3">
-                              Try Now
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              ))}
-            </Tabs>
-          </CardContent>
-        </Card>
-
-        {/* Language Selection */}
-        {languages && languages.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Languages className="w-5 h-5" />
-                Available Languages
-              </CardTitle>
-              <CardDescription>Choose a language to start learning</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                {languages.map((language: any) => (
-                  <Button
-                    key={language.id}
-                    variant={selectedLanguage === language.id ? "default" : "outline"}
-                    onClick={() => setSelectedLanguage(language.id)}
-                    className="h-20 flex-col gap-2"
-                  >
-                    <span className="text-2xl">{language.flag_emoji}</span>
-                    <div className="text-center">
-                      <div className="font-medium">{language.name}</div>
-                      <div className="text-xs text-gray-500">{language.native_name}</div>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Personalized Learning Features */}
+        {/* AI Features */}
         <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="w-6 h-6 text-blue-600" />
-              Your Personalized Learning Experience
+              <Brain className="w-6 h-6 text-blue-600" />
+              AI-Powered Learning Features
             </CardTitle>
             <CardDescription>
-              AI-powered features tailored to your learning style and progress
+              Personalized content generated specifically for your learning style and interests
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                <Brain className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">AI-Powered Adaptive Learning</h3>
+              <div className="text-center p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                <Sparkles className="w-10 h-10 text-yellow-500 mx-auto mb-3" />
+                <h3 className="font-semibold mb-2">Smart Content Generation</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Our AI adjusts difficulty and pacing based on your performance and learning style
+                  AI creates vocabulary, grammar, and cultural content based on your interests and field of learning
                 </p>
               </div>
-              <div className="text-center p-6 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                <Target className="w-12 h-12 text-green-600 mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">Smart Goals & Reminders</h3>
+              
+              <div className="text-center p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                <Target className="w-10 h-10 text-green-500 mx-auto mb-3" />
+                <h3 className="font-semibold mb-2">Adaptive Difficulty</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Customizable study goals with intelligent notifications to keep you motivated
+                  Learning path adjusts difficulty based on your progress and CEFR level
                 </p>
               </div>
-              <div className="text-center p-6 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                <TrendingUp className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">CEFR Progress Tracking</h3>
+              
+              <div className="text-center p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                <Globe className="w-10 h-10 text-purple-500 mx-auto mb-3" />
+                <h3 className="font-semibold mb-2">Cultural Context</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Track your progress with standardized CEFR levels from A1 to C2
+                  Learn real-world applications with cultural notes and practical examples
                 </p>
               </div>
             </div>

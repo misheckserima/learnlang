@@ -182,6 +182,20 @@ Respond with valid JSON only.`;
   }
 }
 
+export async function generateContent(prompt: string): Promise<string> {
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt
+    });
+
+    return response.text || "";
+  } catch (error) {
+    console.error("Error generating content:", error);
+    throw new Error(`Failed to generate content: ${error}`);
+  }
+}
+
 export async function generateGrammarExercise(
   language: string,
   grammarTopic: string,

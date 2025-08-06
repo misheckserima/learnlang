@@ -1,4 +1,4 @@
-import { summarizeArticle } from "./gemini";
+import { generateContent } from "./gemini";
 
 export interface LearningContentRequest {
   category: string;
@@ -26,7 +26,7 @@ export async function generateLearningContent(request: LearningContentRequest): 
   const prompt = buildContentPrompt(request);
   
   try {
-    const response = await summarizeArticle(prompt);
+    const response = await generateContent(prompt);
     const content = parseAIResponse(response, request.contentType);
     
     return {
