@@ -11,16 +11,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Upload, X, Globe, BookOpen, Target, Clock } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Upload, X, Globe, BookOpen, Target, Clock, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { countries, learningCategories, contentTypes } from "@/../../shared/countries";
 
 const profileSetupSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   location: z.string().optional(),
+  country: z.string().optional(),
   fieldOfLearning: z.string().optional(),
   interests: z.array(z.string()).optional(),
+  learningCategories: z.array(z.string()).optional(),
+  contentTypes: z.array(z.string()).optional(),
+  preferredLearningStyle: z.string().optional(),
   dailyGoalMinutes: z.number().min(5).max(240).default(20),
   cefr_level: z.enum(["A1", "A2", "B1", "B2", "C1", "C2"]).default("A1"),
   profileImageUrl: z.string().optional(),
@@ -61,6 +67,8 @@ export default function ProfileSetup() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedContentTypes, setSelectedContentTypes] = useState<string[]>([]);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
 
@@ -147,6 +155,8 @@ export default function ProfileSetup() {
     const submitData = {
       ...data,
       interests: selectedInterests,
+      learningCategories: selectedCategories,
+      contentTypes: selectedContentTypes,
       profileCompleted: true,
     };
     updateProfileMutation.mutate(submitData);
@@ -238,14 +248,33 @@ export default function ProfileSetup() {
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  {...register("location")}
-                  className="mt-1"
-                  placeholder="e.g., New York, USA"
-                />
+              {/* Location and Country */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="location">City/Location</Label>
+                  <Input
+                    id="location"
+                    {...register("location")}
+                    className="mt-1"
+                    placeholder="e.g., New York"
+                  />
+                </div>
+                
+                <div>
+                  <Label>Country</Label>
+                  <Select onValueChange={(value) => setValue("country", value)}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select your country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map((country) => (
+                        <SelectItem key={country.code} value={country.name}>
+                          {country.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {/* Field of Learning */}
@@ -298,6 +327,89 @@ export default function ProfileSetup() {
                         </div>
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Learning Categories */}
+              <div>
+                <Label>Learning Categories (Select your areas of interest)</Label>
+                <div className="mt-2 space-y-3">
+                  {learningCategories.map((category) => (
+                    <div key={category.id} className="flex items-start space-x-2">
+                      <Checkbox
+                        id={category.id}
+                        checked={selectedCategories.includes(category.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedCategories([...selectedCategories, category.id]);
+                          } else {
+                            setSelectedCategories(selectedCategories.filter(cat => cat !== category.id));
+                          }
+                        }}
+                      />
+                      <div className="grid gap-1.5 leading-none">
+                        <label
+                          htmlFor={category.id}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                        >
+                          {category.name}
+                        </label>
+                        <p className="text-xs text-muted-foreground">
+                          {category.subcategories.slice(0, 3).join(", ")}...
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content Types */}
+              <div>
+                <Label>Content Types (What would you like to learn?)</Label>
+                <div className="mt-2 space-y-3">
+                  {contentTypes.map((type) => (
+                    <div key={type.id} className="flex items-start space-x-2">
+                      <Checkbox
+                        id={type.id}
+                        checked={selectedContentTypes.includes(type.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedContentTypes([...selectedContentTypes, type.id]);
+                          } else {
+                            setSelectedContentTypes(selectedContentTypes.filter(t => t !== type.id));
+                          }
+                        }}
+                      />
+                      <div className="grid gap-1.5 leading-none">
+                        <label
+                          htmlFor={type.id}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                        >
+                          {type.name}
+                        </label>
+                        <p className="text-xs text-muted-foreground">
+                          {type.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Learning Style */}
+              <div>
+                <Label>Preferred Learning Style</Label>
+                <Select onValueChange={(value) => setValue("preferredLearningStyle", value)}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select your learning style" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="visual">Visual Learner (images, diagrams, charts)</SelectItem>
+                    <SelectItem value="auditory">Auditory Learner (listening, speaking)</SelectItem>
+                    <SelectItem value="kinesthetic">Kinesthetic Learner (hands-on, interactive)</SelectItem>
+                    <SelectItem value="reading">Reading/Writing Learner (text-based)</SelectItem>
+                    <SelectItem value="mixed">Mixed Learning (combination of all)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

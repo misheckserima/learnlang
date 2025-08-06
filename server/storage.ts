@@ -12,6 +12,8 @@ import {
   learningStages,
   userConnections,
   videoCallSessions,
+  userLearningContent,
+  flashcards,
   type User, 
   type InsertUser,
   type Language,
@@ -32,6 +34,10 @@ import {
   type InsertUserConnection,
   type VideoCallSession,
   type InsertVideoCallSession,
+  type UserLearningContent,
+  type InsertUserLearningContent,
+  type Flashcard,
+  type InsertFlashcard,
   updateUserProfileSchema,
 } from "@shared/schema";
 import { db } from "./db";
@@ -92,6 +98,16 @@ export interface IStorage {
   createVideoCallSession(insertCall: InsertVideoCallSession): Promise<VideoCallSession>;
   updateVideoCallStatus(callId: string, status: string): Promise<VideoCallSession>;
   getActiveCallsForUser(userId: string): Promise<VideoCallSession[]>;
+
+  // User Learning Content methods
+  getUserLearningContent(userId: string, languageId: string): Promise<UserLearningContent[]>;
+  createUserLearningContent(insertContent: InsertUserLearningContent): Promise<UserLearningContent>;
+  updateLearningContentProgress(contentId: string, masteryLevel: number): Promise<UserLearningContent>;
+
+  // Flashcard methods
+  getUserFlashcards(userId: string, dueOnly?: boolean): Promise<Flashcard[]>;
+  createFlashcard(insertFlashcard: InsertFlashcard): Promise<Flashcard>;
+  updateFlashcardReview(flashcardId: string, grade: number): Promise<Flashcard>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -443,6 +459,113 @@ export class DatabaseStorage implements IStorage {
         )
       )
       .orderBy(desc(videoCallSessions.createdAt));
+  }
+
+  // User Learning Content methods
+  async getUserLearningContent(userId: string, languageId: string): Promise<UserLearningContent[]> {
+    return await db
+      .select()
+      .from(userLearningContent)
+      .where(
+        and(
+          eq(userLearningContent.userId, userId),
+          eq(userLearningContent.languageId, languageId)
+        )
+      )
+      .orderBy(desc(userLearningContent.createdAt));
+  }
+
+  async createUserLearningContent(insertContent: InsertUserLearningContent): Promise<UserLearningContent> {
+    const [content] = await db
+      .insert(userLearningContent)
+      .values(insertContent)
+      .returning();
+    return content;
+  }
+
+  async updateLearningContentProgress(contentId: string, masteryLevel: number): Promise<UserLearningContent> {
+    const [content] = await db
+      .update(userLearningContent)
+      .set({
+        masteryLevel,
+        lastReviewed: new Date(),
+        nextReview: new Date(Date.now() + 24 * 60 * 60 * 1000), // Next day
+        reviewCount: sql`${userLearningContent.reviewCount} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(eq(userLearningContent.id, contentId))
+      .returning();
+    return content;
+  }
+
+  // Flashcard methods
+  async getUserFlashcards(userId: string, dueOnly: boolean = false): Promise<Flashcard[]> {
+    const conditions = [eq(flashcards.userId, userId), eq(flashcards.isArchived, false)];
+    
+    if (dueOnly) {
+      conditions.push(sql`${flashcards.nextReview} <= NOW()`);
+    }
+
+    return await db
+      .select()
+      .from(flashcards)
+      .where(and(...conditions))
+      .orderBy(asc(flashcards.nextReview));
+  }
+
+  async createFlashcard(insertFlashcard: InsertFlashcard): Promise<Flashcard> {
+    const [flashcard] = await db
+      .insert(flashcards)
+      .values(insertFlashcard)
+      .returning();
+    return flashcard;
+  }
+
+  async updateFlashcardReview(flashcardId: string, grade: number): Promise<Flashcard> {
+    // SM-2 spaced repetition algorithm
+    const [currentCard] = await db
+      .select()
+      .from(flashcards)
+      .where(eq(flashcards.id, flashcardId));
+
+    if (!currentCard) throw new Error("Flashcard not found");
+
+    let easinessFactor = currentCard.easinessFactor || 2.5;
+    let interval = currentCard.interval || 1;
+    let repetitions = currentCard.repetitions || 0;
+
+    if (grade >= 3) {
+      if (repetitions === 0) {
+        interval = 1;
+      } else if (repetitions === 1) {
+        interval = 6;
+      } else {
+        interval = Math.round(interval * easinessFactor);
+      }
+      repetitions++;
+    } else {
+      repetitions = 0;
+      interval = 1;
+    }
+
+    easinessFactor = easinessFactor + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
+    if (easinessFactor < 1.3) easinessFactor = 1.3;
+
+    const nextReview = new Date(Date.now() + interval * 24 * 60 * 60 * 1000);
+
+    const [flashcard] = await db
+      .update(flashcards)
+      .set({
+        easinessFactor,
+        interval,
+        repetitions,
+        lastReviewed: new Date(),
+        nextReview,
+      })
+      .where(eq(flashcards.id, flashcardId))
+      .returning();
+
+    return flashcard;
   }
 }
 
