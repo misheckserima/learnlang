@@ -471,6 +471,11 @@ export const insertVideoCallSessionSchema = createInsertSchema(videoCallSessions
   createdAt: true,
 });
 
+export const insertAssessmentTestSchema = createInsertSchema(assessmentTests).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -492,6 +497,8 @@ export type InsertStudySession = z.infer<typeof insertStudySessionSchema>;
 
 export type ProgressBenchmark = typeof progressBenchmarks.$inferSelect;
 export type InsertProgressBenchmark = z.infer<typeof insertProgressBenchmarkSchema>;
+export type AssessmentTest = typeof assessmentTests.$inferSelect;
+export type InsertAssessmentTest = z.infer<typeof insertAssessmentTestSchema>;
 
 export type UserVocabularyProgress = typeof userVocabularyProgress.$inferSelect;
 export type Achievement = typeof achievements.$inferSelect;

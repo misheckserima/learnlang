@@ -461,6 +461,40 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(videoCallSessions.createdAt));
   }
 
+  // Assessment Test methods
+  async createAssessmentTest(insertTest: InsertAssessmentTest): Promise<AssessmentTest> {
+    const [test] = await db
+      .insert(assessmentTests)
+      .values(insertTest)
+      .returning();
+    return test;
+  }
+
+  async getUserAssessmentTests(userId: string, limit = 10): Promise<AssessmentTest[]> {
+    return await db
+      .select()
+      .from(assessmentTests)
+      .where(eq(assessmentTests.userId, userId))
+      .orderBy(desc(assessmentTests.createdAt))
+      .limit(limit);
+  }
+
+  async getLearningStageById(stageId: string): Promise<LearningStage | null> {
+    const [stage] = await db
+      .select()
+      .from(learningStages)
+      .where(eq(learningStages.id, stageId));
+    return stage || null;
+  }
+
+  async getLanguageById(languageId: string): Promise<Language | null> {
+    const [language] = await db
+      .select()
+      .from(languages)
+      .where(eq(languages.id, languageId));
+    return language || null;
+  }
+
   // User Learning Content methods
   async getUserLearningContent(userId: string, languageId: string): Promise<UserLearningContent[]> {
     return await db

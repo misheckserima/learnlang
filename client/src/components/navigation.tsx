@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { User, Settings, LogOut, Home, Brain, Users, Sparkles } from "lucide-react";
+import { User, Settings, LogOut, Home, Brain, Users, Sparkles, Trophy } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -81,6 +81,13 @@ export default function Navigation() {
               <Button variant="ghost" className="flex items-center gap-2">
                 <Users className="w-4 h-4" />
                 Community
+              </Button>
+            </Link>
+            
+            <Link href="/badges">
+              <Button variant="ghost" className="flex items-center gap-2">
+                <Trophy className="w-4 h-4" />
+                Badges
               </Button>
             </Link>
           </div>

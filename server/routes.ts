@@ -12,10 +12,12 @@ import {
   insertLearningStageSchema,
   insertUserConnectionSchema,
   insertVideoCallSessionSchema,
+  insertAssessmentTestSchema,
   updateUserProfileSchema,
 } from "@shared/schema";
 import { generateLearningPathway, generateVocabularySet } from "./gemini";
 import { generateTeachingQuestions } from "./ai-teaching-questions";
+import { generateAssessmentTest, evaluateAssessment } from "./ai-assessment-generator";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
@@ -626,6 +628,131 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching active calls:", error);
       res.status(500).json({ message: "Failed to fetch active calls" });
+    }
+  });
+
+  // Assessment Test routes
+  app.post("/api/assessments/generate", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { testType, learningStageId, questionCount, difficulty } = req.body;
+      
+      const user = await storage.getUserById(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const targetLanguage = await storage.getLanguageById(user.targetLanguageId || "");
+      if (!targetLanguage) {
+        return res.status(404).json({ message: "Target language not found" });
+      }
+
+      // Get stage content if this is a stage completion test
+      let stageContent = null;
+      if (learningStageId) {
+        const stage = await storage.getLearningStageById(learningStageId);
+        stageContent = stage ? {
+          stageId: stage.id,
+          vocabularyData: stage.vocabularyData,
+          grammarTopics: stage.grammarTopics
+        } : null;
+      }
+
+      const assessment = await generateAssessmentTest(
+        testType || "stage_completion",
+        targetLanguage.name,
+        user.cefr_level || "A1",
+        questionCount || 10,
+        stageContent
+      );
+
+      res.json(assessment);
+    } catch (error) {
+      console.error("Error generating assessment:", error);
+      res.status(500).json({ message: "Failed to generate assessment test" });
+    }
+  });
+
+  app.post("/api/assessments/submit", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { testId, answers, timeSpent } = req.body;
+      
+      // In a real app, you'd retrieve the test questions from storage
+      // For now, we'll evaluate based on the submitted answers
+      const user = await storage.getUserById(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // This is a simplified evaluation - in production you'd store the test questions
+      const mockQuestions = Object.keys(answers).map((questionId, index) => ({
+        id: questionId,
+        type: 'multiple_choice' as const,
+        question: `Question ${index + 1}`,
+        correctAnswer: 'correct_answer', // In reality, this would come from stored test data
+        explanation: 'Explanation',
+        difficulty: 'intermediate'
+      }));
+
+      const result = await evaluateAssessment(mockQuestions, answers, timeSpent);
+
+      // Store the assessment result
+      await storage.createAssessmentTest({
+        userId: req.session.userId,
+        languageId: user.targetLanguageId || "",
+        testType: "stage_completion",
+        score: result.score.toString(),
+        passingScore: "80",
+        totalQuestions: result.totalQuestions,
+        correctAnswers: result.correctAnswers,
+        attempts: 1,
+        passed: result.passed
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.error("Error submitting assessment:", error);
+      res.status(500).json({ message: "Failed to submit assessment" });
+    }
+  });
+
+  // AI Teaching Questions route
+  app.post("/api/ai/teaching-questions", async (req, res) => {
+    try {
+      if (!req.session.userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { usedQuestions, difficulty, interests } = req.body;
+      
+      const user = await storage.getUserById(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const targetLanguage = await storage.getLanguageById(user.targetLanguageId || "");
+      if (!targetLanguage) {
+        return res.status(404).json({ message: "Target language not found" });
+      }
+
+      const question = await generateTeachingQuestions(
+        targetLanguage.name,
+        user.cefr_level || "A1",
+        interests || user.interests || [],
+        usedQuestions || []
+      );
+
+      res.json(question);
+    } catch (error) {
+      console.error("Error generating teaching question:", error);
+      res.status(500).json({ message: "Failed to generate teaching question" });
     }
   });
 

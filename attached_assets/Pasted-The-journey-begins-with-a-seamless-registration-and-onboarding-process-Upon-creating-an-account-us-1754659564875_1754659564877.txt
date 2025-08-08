@@ -1,0 +1,29 @@
+The journey begins with a seamless registration and onboarding process. Upon creating an account, users are directed to a login screen and, on their first login, taken directly to an Edit Profile interface. This page captures key user details including a customizable username, selection of their country via a dropdown menu with a smart filter, a calendar-based date of birth picker, and gender selection through checkboxes. These details personalize the system from the outset and prepare it to generate relevant learning content. Once the profile is completed, the user is directed to a Welcome Page that introduces how the system operates. From here, a prominent "Generate Content" button leads the user into the core of the learning experience.
+
+Clicking this button transports the user to a page titled "Generate Your Learning Path," which houses a detailed form used to collect specific information that powers the system’s intelligent content generation. The form begins by asking the user for their native language and their desired target language. Upon selecting a target language, an extended menu presents proficiency levels such as Beginner, Intermediate, C1, or CA, allowing the AI to tailor content to the learner's actual level instead of providing generalized lessons.
+
+Equally critical is the selection of the user's Area of Interest. Users can choose from broad categories such as Education, Health, Technology, Travel, and more. Each category dynamically expands into more refined subcategories — for example, choosing Education might open Engineering & Technology, which in turn could reveal Robotics. Each sub-niche allows multiple checkbox selections, enabling users to specify what they want to learn. This meticulous breakdown ensures the AI generates content aligned with the learner’s goals, such as terminology, grammar, practical usage, presentations, and exercises relevant to that field.
+
+Furthermore, users have the option to upload a PDF of their syllabus. If available, the AI will scan and integrate its contents into the learning path, allowing for highly customized content that aligns with academic or professional goals. Upon submitting the form, the system displays a loading animation while it processes the user’s input and prepares the content. Once ready, the user is redirected to their personalized Dashboard, which contains all generated tasks, milestones, and instructions.
+
+The learning path itself is adaptive and responsive. For complete beginners, the system starts with foundational elements — such as the alphabet, numbers, and basic vocabulary — and gradually introduces more complex topics as users demonstrate mastery. Each stage of learning unlocks upon successful completion of an AI-generated assessment. If a user scores below 80%, the system provides immediate feedback and allows them to retake the test. Once a passing score is achieved, the next stage is unlocked. All user activities, progress, and assessments are stored in a centralized database associated with their unique ID, ensuring that progress is saved and content is never unnecessarily repeated.
+
+To further reinforce learning, the platform features a Spaced Repetition system. This function generates tests based on previously completed content, helping users retain and recall information over time. While the questions themselves are not stored, the user’s performance — including test scores, number of completed repetitions, and skipped tests — is logged. These data points are later used for ranking, performance analysis, and reward allocation.
+
+A notable element of the platform is its gamification system, which motivates learners through badges, progress tracking, and level achievements. One of the key milestones is the Level 1 Badge, which also grants Premium Membership. To achieve this, users must meet the following criteria within a three-week period:
+
+Complete 25 successful video call interactions
+
+Pass 10 spaced repetition exams with scores of 80% or higher
+
+Complete 4 AI-generated assessment tests with scores of 90% or higher
+
+These conditions encourage consistency, effort, and deep engagement with the platform.
+
+In addition to solo learning, the platform emphasizes social interaction through a Community Tab, which displays users currently online. However, the system only matches users whose native language matches the other’s target language — for example, a native English speaker learning Russian will only see native Russian speakers learning English. This creates a balanced and beneficial exchange of knowledge between users.
+
+When a connection is established, the initiating user enters Teaching Mode for the first 15 minutes. During this period, they can ask questions in their native language and guide the other learner. If they run out of material, an AI button allows them to generate new, interest-specific questions instantly. The AI avoids repeating questions, and a regenerate option provides even more variety. After 15 minutes, the system automatically switches roles. The original teacher becomes the learner, and their interface changes to a simplified view with no AI button — they now listen and respond.
+
+Each call is capped at 30 minutes, with an option to extend once. The system logs call duration, user IDs, and total calls per user. These records also feed into the badge system, with advanced badges reserved for consistent contributors who complete multiple calls and high-level tasks.
+
+At the heart of the system is a powerful AI engine that analyzes every piece of user data — from performance in assessments and repetition exams to call history and study consistency. This analysis is used to personalize further learning paths, recommend areas of improvement, and generate motivational feedback. Top performers can be recognized as model learners, further boosting their status within the platform.

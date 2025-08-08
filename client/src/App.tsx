@@ -18,6 +18,8 @@ import LearningPathway from "@/pages/LearningPathway";
 import OnlineFriends from "@/pages/OnlineFriends";
 import GenerateLearningPath from "@/pages/generate-learning-path";
 import Community from "@/pages/community";
+import AssessmentTest from "@/pages/assessment-test";
+import Badges from "@/pages/badges";
 import { useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -85,6 +87,8 @@ function Router() {
         <Route path="/generate-learning-path" component={GenerateLearningPath} />
         <Route path="/community" component={Community} />
         <Route path="/online-friends" component={OnlineFriends} />
+        <Route path="/assessment-test" component={AssessmentTest} />
+        <Route path="/badges" component={Badges} />
         <Route path="/not-found" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

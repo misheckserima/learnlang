@@ -20,16 +20,23 @@ import { countries, learningCategories, contentTypes } from "@/../../shared/coun
 const profileSetupSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
+  dateOfBirth: z.string().optional(),
+  gender: z.enum(["male", "female", "other", "prefer_not_to_say"]).optional(),
   location: z.string().optional(),
   country: z.string().optional(),
+  nativeLanguageId: z.string().min(1, "Native language is required"),
+  targetLanguageId: z.string().min(1, "Target language is required"),
+  proficiencyLevel: z.enum(["Beginner", "Intermediate", "C1", "CA"]).default("Beginner"),
   fieldOfLearning: z.string().optional(),
   interests: z.array(z.string()).optional(),
   learningCategories: z.array(z.string()).optional(),
+  subCategories: z.array(z.string()).optional(),
   contentTypes: z.array(z.string()).optional(),
   preferredLearningStyle: z.string().optional(),
   dailyGoalMinutes: z.number().min(5).max(240).default(20),
   cefr_level: z.enum(["A1", "A2", "B1", "B2", "C1", "C2"]).default("A1"),
   profileImageUrl: z.string().optional(),
+  syllabusUrl: z.string().optional(),
 });
 
 type ProfileSetupForm = z.infer<typeof profileSetupSchema>;
@@ -53,6 +60,13 @@ const INTEREST_OPTIONS = [
   "Sports", "Food", "History", "Literature", "Movies", "Gaming", "Photography"
 ];
 
+const PROFICIENCY_LEVELS = [
+  { value: "Beginner", label: "Beginner", description: "Just starting out" },
+  { value: "Intermediate", label: "Intermediate", description: "Some experience" },
+  { value: "C1", label: "C1", description: "Advanced proficiency" },
+  { value: "CA", label: "CA", description: "Near-native proficiency" }
+];
+
 const CEFR_LEVELS = [
   { value: "A1", label: "A1 - Beginner", description: "Can understand basic phrases" },
   { value: "A2", label: "A2 - Elementary", description: "Can handle simple conversations" },
@@ -62,15 +76,90 @@ const CEFR_LEVELS = [
   { value: "C2", label: "C2 - Proficient", description: "Near-native level" }
 ];
 
+const NESTED_INTEREST_CATEGORIES = [
+  {
+    name: "Education",
+    subcategories: [
+      {
+        name: "Engineering & Technology",
+        subcategories: ["Robotics", "Software Development", "Mechanical Engineering", "Electrical Engineering", "AI & Machine Learning"]
+      },
+      {
+        name: "Sciences",
+        subcategories: ["Biology", "Chemistry", "Physics", "Mathematics", "Environmental Science"]
+      },
+      {
+        name: "Languages & Literature",
+        subcategories: ["Linguistics", "Creative Writing", "Translation", "Literature Analysis", "Poetry"]
+      }
+    ]
+  },
+  {
+    name: "Health",
+    subcategories: [
+      {
+        name: "Medical Field",
+        subcategories: ["General Medicine", "Nursing", "Pharmacy", "Dentistry", "Surgery"]
+      },
+      {
+        name: "Wellness & Fitness",
+        subcategories: ["Nutrition", "Mental Health", "Physical Therapy", "Sports Medicine", "Yoga"]
+      }
+    ]
+  },
+  {
+    name: "Technology",
+    subcategories: [
+      {
+        name: "Software Development",
+        subcategories: ["Web Development", "Mobile Apps", "Game Development", "DevOps", "Cybersecurity"]
+      },
+      {
+        name: "Data & Analytics",
+        subcategories: ["Data Science", "Machine Learning", "Business Intelligence", "Statistics", "Database Management"]
+      }
+    ]
+  },
+  {
+    name: "Business",
+    subcategories: [
+      {
+        name: "Management",
+        subcategories: ["Project Management", "Team Leadership", "Strategic Planning", "Operations", "HR Management"]
+      },
+      {
+        name: "Finance & Economics",
+        subcategories: ["Investment", "Accounting", "Banking", "Economics", "Cryptocurrency"]
+      }
+    ]
+  },
+  {
+    name: "Travel",
+    subcategories: [
+      {
+        name: "Cultural Exploration",
+        subcategories: ["History", "Local Customs", "Food Culture", "Architecture", "Festivals"]
+      },
+      {
+        name: "Adventure & Nature",
+        subcategories: ["Hiking", "Photography", "Wildlife", "Geography", "Sustainable Tourism"]
+      }
+    ]
+  }
+];
+
 export default function ProfileSetup() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
   const [selectedContentTypes, setSelectedContentTypes] = useState<string[]>([]);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const {
     register,

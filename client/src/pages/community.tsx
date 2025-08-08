@@ -20,6 +20,7 @@ import {
 import { apiRequest } from "@/lib/queryClient";
 import Navigation from "@/components/navigation";
 import { useToast } from "@/hooks/use-toast";
+import VideoCall from "@/components/video-call";
 
 interface User {
   id: string;
@@ -55,8 +56,10 @@ export default function Community() {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCallId, setActiveCallId] = useState<string | null>(null);
+  const [currentCallPartner, setCurrentCallPartner] = useState<User | null>(null);
   const [callDuration, setCallDuration] = useState(0);
   const [isTeachingMode, setIsTeachingMode] = useState(true);
+  const [isInCall, setIsInCall] = useState(false);
 
   // Fetch user data
   const { data: userResponse } = useQuery({
@@ -81,39 +84,31 @@ export default function Community() {
   // Initiate video call mutation
   const initiateCallMutation = useMutation({
     mutationFn: (partnerId: string) => 
-      apiRequest("/api/video-calls/initiate", {
+      apiRequest("/api/video-calls", {
         method: "POST",
-        body: JSON.stringify({ partnerId }),
+        body: JSON.stringify({ receiverId: partnerId }),
       }),
-    onSuccess: (callData) => {
+    onSuccess: (callData, partnerId) => {
       setActiveCallId(callData.id);
+      const partner = potentialMatches.find(match => match.user.id === partnerId);
+      if (partner) {
+        setCurrentCallPartner(partner.user);
+        setIsInCall(true);
+      }
       setCallDuration(0);
       setIsTeachingMode(true);
       
       toast({
         title: "Video Call Started!",
-        description: "You are now in Teaching Mode for the first 15 minutes.",
+        description: "Connecting with your language partner...",
       });
-      
-      // Start call timer
-      const timer = setInterval(() => {
-        setCallDuration(prev => {
-          if (prev === 900) { // 15 minutes
-            setIsTeachingMode(false);
-            toast({
-              title: "Mode Switch!",
-              description: "You are now in Learning Mode. Roles have switched!",
-            });
-          }
-          return prev + 1;
-        });
-      }, 1000);
-      
-      // Auto-end call after 30 minutes
-      setTimeout(() => {
-        clearInterval(timer);
-        endCallMutation.mutate(callData.id);
-      }, 1800000); // 30 minutes
+    },
+    onError: () => {
+      toast({
+        title: "Call Failed",
+        description: "Unable to start video call. Please try again.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -144,10 +139,30 @@ export default function Community() {
       }),
   });
 
+  const handleEndCall = () => {
+    setIsInCall(false);
+    setActiveCallId(null);
+    setCurrentCallPartner(null);
+    queryClient.invalidateQueries({ queryKey: ["/api/video-calls/active"] });
+  };
+
   const filteredMatches = potentialMatches.filter((match: PotentialMatch) =>
     match.user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     match.user.country.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Render video call interface if in call
+  if (isInCall && activeCallId && currentCallPartner) {
+    return (
+      <VideoCall
+        callId={activeCallId}
+        isInitiator={true}
+        receiverName={`${currentCallPartner.firstName} ${currentCallPartner.lastName}`}
+        receiverImage={currentCallPartner.profileImageUrl}
+        onEndCall={handleEndCall}
+      />
+    );
+  }
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
