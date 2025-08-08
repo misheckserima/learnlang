@@ -4,8 +4,8 @@
 
 The platform features a custom logo with a globe icon inside speech bubbles, representing global communication and language learning. The branding emphasizes the universal nature of the platform with the simple, memorable name "Learn a Language".
 
-## Recent Updates (August 2025)
-- **Migration Complete**: Successfully migrated from Replit Agent to Replit environment with PostgreSQL database
+## Recent Updates (January 2025)
+- **Migration Complete**: Successfully migrated from Replit Agent to Replit environment with PostgreSQL database (January 8, 2025)
 - **Authentication Fixed**: Resolved session persistence issues with enhanced cookie configuration and rolling sessions
 - **Database Setup**: Created session table, added 6 supported languages, and fixed user authentication credentials
 - **Enhanced Profile System**: Added comprehensive profile setup with image upload (1MB limit), location, interests, field of learning
