@@ -161,6 +161,12 @@ export default function ProfileSetup() {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  // Fetch available languages
+  const { data: languages = [] } = useQuery({
+    queryKey: ["/api/languages"],
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+
   const {
     register,
     handleSubmit,
@@ -317,6 +323,7 @@ export default function ProfileSetup() {
                     {...register("firstName")}
                     className="mt-1"
                     placeholder="Your first name"
+                    data-testid="input-firstName"
                   />
                   {errors.firstName && (
                     <p className="text-sm text-red-500 mt-1">{errors.firstName.message}</p>
@@ -330,11 +337,73 @@ export default function ProfileSetup() {
                     {...register("lastName")}
                     className="mt-1"
                     placeholder="Your last name"
+                    data-testid="input-lastName"
                   />
                   {errors.lastName && (
                     <p className="text-sm text-red-500 mt-1">{errors.lastName.message}</p>
                   )}
                 </div>
+              </div>
+
+              {/* Language Selection */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="nativeLanguage">Native Language *</Label>
+                  <Select onValueChange={(value) => setValue("nativeLanguageId", value)}>
+                    <SelectTrigger className="mt-1" data-testid="select-nativeLanguage">
+                      <SelectValue placeholder="Select your native language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {languages.map((lang: any) => (
+                        <SelectItem key={lang.id} value={lang.id}>
+                          {lang.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.nativeLanguageId && (
+                    <p className="text-sm text-red-500 mt-1">{errors.nativeLanguageId.message}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <Label htmlFor="targetLanguage">Target Language *</Label>
+                  <Select onValueChange={(value) => setValue("targetLanguageId", value)}>
+                    <SelectTrigger className="mt-1" data-testid="select-targetLanguage">
+                      <SelectValue placeholder="Language you want to learn" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {languages.map((lang: any) => (
+                        <SelectItem key={lang.id} value={lang.id}>
+                          {lang.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.targetLanguageId && (
+                    <p className="text-sm text-red-500 mt-1">{errors.targetLanguageId.message}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Proficiency Level */}
+              <div>
+                <Label htmlFor="proficiencyLevel">Current Proficiency Level</Label>
+                <Select onValueChange={(value) => setValue("proficiencyLevel", value as any)}>
+                  <SelectTrigger className="mt-1" data-testid="select-proficiencyLevel">
+                    <SelectValue placeholder="Select your current level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PROFICIENCY_LEVELS.map((level) => (
+                      <SelectItem key={level.value} value={level.value}>
+                        <div>
+                          <div className="font-medium">{level.label}</div>
+                          <div className="text-sm text-gray-500">{level.description}</div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Location and Country */}
@@ -543,8 +612,9 @@ export default function ProfileSetup() {
 
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium"
                 disabled={updateProfileMutation.isPending || isUploading}
+                data-testid="button-complete-profile"
               >
                 {updateProfileMutation.isPending ? "Setting up..." : "Complete Profile Setup"}
               </Button>
