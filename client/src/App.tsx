@@ -16,6 +16,8 @@ import ProfileSetup from "@/pages/profile-setup";
 import NotFound from "@/pages/not-found";
 import LearningPathway from "@/pages/LearningPathway";
 import OnlineFriends from "@/pages/OnlineFriends";
+import GenerateLearningPath from "@/pages/generate-learning-path";
+import Community from "@/pages/community";
 import { useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -80,6 +82,8 @@ function Router() {
         <Route path="/profile" component={Profile} />
         <Route path="/profile-setup" component={ProfileSetup} />
         <Route path="/learning-pathway" component={LearningPathway} />
+        <Route path="/generate-learning-path" component={GenerateLearningPath} />
+        <Route path="/community" component={Community} />
         <Route path="/online-friends" component={OnlineFriends} />
         <Route path="/not-found" component={NotFound} />
         <Route component={NotFound} />

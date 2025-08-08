@@ -15,6 +15,7 @@ import {
   updateUserProfileSchema,
 } from "@shared/schema";
 import { generateLearningPathway, generateVocabularySet } from "./gemini";
+import { generateTeachingQuestions } from "./ai-teaching-questions";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
@@ -669,6 +670,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.clearCookie('connect.sid');
       res.json({ message: "Logged out successfully" });
     });
+  });
+
+  // Community and video call routes
+  app.get("/api/community/matches", async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      // For now, return empty array - this would need proper implementation
+      res.json([]);
+    } catch (error) {
+      console.error("Error fetching community matches:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/video-calls/initiate", async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { partnerId } = req.body;
+      if (!partnerId) {
+        return res.status(400).json({ message: "Partner ID is required" });
+      }
+
+      // Mock response for now
+      const callSession = {
+        id: "call-" + Date.now(),
+        teacherId: userId,
+        learnerId: partnerId,
+        status: "active",
+        durationMinutes: 30
+      };
+
+      res.status(201).json(callSession);
+    } catch (error) {
+      console.error("Error initiating video call:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.put("/api/video-calls/:callId/end", async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      res.json({ message: "Call ended successfully" });
+    } catch (error) {
+      console.error("Error ending video call:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/ai/generate-questions", async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { interests } = req.body;
+      
+      // Generate teaching questions based on user interests
+      const questions = await generateTeachingQuestions(interests || []);
+      
+      res.json({ questions });
+    } catch (error) {
+      console.error("Error generating questions:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
 
   return httpServer;

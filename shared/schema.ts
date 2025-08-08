@@ -25,16 +25,27 @@ export const users = pgTable("users", {
   profileImageUrl: text("profile_image_url"),
   location: varchar("location", { length: 100 }),
   country: varchar("country", { length: 100 }),
+  dateOfBirth: timestamp("date_of_birth"),
+  gender: varchar("gender", { length: 20 }),
+  nativeLanguageId: uuid("native_language_id").references(() => languages.id),
+  targetLanguageId: uuid("target_language_id").references(() => languages.id),
+  proficiencyLevel: varchar("proficiency_level", { length: 20 }).default("Beginner"), // Beginner, Intermediate, C1, CA
   interests: text("interests").array(),
   fieldOfLearning: varchar("field_of_learning", { length: 100 }),
   learningCategories: text("learning_categories").array(),
+  subCategories: text("sub_categories").array(),
   contentTypes: text("content_types").array(),
   preferredLearningStyle: varchar("preferred_learning_style", { length: 50 }),
+  syllabusUrl: text("syllabus_url"),
   currentStreak: integer("current_streak").default(0),
   totalPoints: integer("total_points").default(0),
   dailyGoalMinutes: integer("daily_goal_minutes").default(20),
   cefr_level: varchar("cefr_level", { length: 5 }).default("A1"), // A1, A2, B1, B2, C1, C2
   profileCompleted: boolean("profile_completed").default(false),
+  isPremiumMember: boolean("is_premium_member").default(false),
+  premiumExpiresAt: timestamp("premium_expires_at"),
+  isOnline: boolean("is_online").default(false),
+  lastActiveAt: timestamp("last_active_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -235,6 +246,72 @@ export const flashcards = pgTable("flashcards", {
   lastReviewed: timestamp("last_reviewed"),
   nextReview: timestamp("next_review").defaultNow(),
   isArchived: boolean("is_archived").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Badges and achievements system
+export const badges = pgTable("badges", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  iconName: varchar("icon_name", { length: 50 }),
+  level: integer("level").default(1), // 1, 2, 3, etc.
+  criteria: jsonb("criteria").notNull(), // JSON requirements
+  points: integer("points").default(0),
+  isPremiumRequired: boolean("is_premium_required").default(false),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User badges
+export const userBadges = pgTable("user_badges", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  badgeId: uuid("badge_id").notNull().references(() => badges.id, { onDelete: "cascade" }),
+  earnedAt: timestamp("earned_at").defaultNow(),
+  progress: jsonb("progress"), // Track progress toward badge criteria
+});
+
+// Spaced repetition tests
+export const spacedRepetitionTests = pgTable("spaced_repetition_tests", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  languageId: uuid("language_id").notNull().references(() => languages.id, { onDelete: "cascade" }),
+  contentIds: text("content_ids").array(), // IDs of content being tested
+  score: decimal("score", { precision: 5, scale: 2 }),
+  totalQuestions: integer("total_questions").default(10),
+  correctAnswers: integer("correct_answers").default(0),
+  completedAt: timestamp("completed_at"),
+  skipped: boolean("skipped").default(false),
+  repetitionNumber: integer("repetition_number").default(1),
+  nextReviewAt: timestamp("next_review_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Assessment tests
+export const assessmentTests = pgTable("assessment_tests", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  learningStageId: uuid("learning_stage_id").references(() => learningStages.id, { onDelete: "cascade" }),
+  languageId: uuid("language_id").notNull().references(() => languages.id, { onDelete: "cascade" }),
+  testType: varchar("test_type", { length: 50 }).default("stage_completion"), // stage_completion, spaced_repetition
+  score: decimal("score", { precision: 5, scale: 2 }),
+  passingScore: decimal("passing_score", { precision: 5, scale: 2 }).default("80"),
+  totalQuestions: integer("total_questions").default(10),
+  correctAnswers: integer("correct_answers").default(0),
+  attempts: integer("attempts").default(1),
+  passed: boolean("passed").default(false),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Interest categories for better content generation
+export const interestCategories = pgTable("interest_categories", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  parentId: uuid("parent_id").references(() => interestCategories.id),
+  level: integer("level").default(1), // 1=main category, 2=subcategory, 3=sub-subcategory
+  isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
